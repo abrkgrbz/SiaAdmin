@@ -8,7 +8,7 @@ using SiaAdmin.Application.Features.Queries.Survey.GetAllSurvey;
 namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [NonController]
     public class SurveyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -27,7 +27,7 @@ namespace SiaAdmin.API.Controllers
         [HttpPost("CreateSurvey")]
         public async Task<IActionResult> CreateSurvey([FromQuery] CreateSurveyRequest createSurveyRequest)
         {
-            var response = _mediator.Send(createSurveyRequest);
+            var response = await _mediator.Send(createSurveyRequest);
             return Ok(response);
         }
     }

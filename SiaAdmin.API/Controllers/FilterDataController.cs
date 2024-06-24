@@ -6,7 +6,7 @@ using SiaAdmin.Application.Features.Queries.FilterData.GetDataTableFilterData;
 namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [NonController]
     public class FilterDataController : ControllerBase
     {
         private IMediator _mediator;

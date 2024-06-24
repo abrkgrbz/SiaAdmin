@@ -10,7 +10,7 @@ namespace SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey
     {
         public int recordsFiltered { get; set; }
         public int recordTotal { get; set; }
-        public object SurveyList { get; set; }
+        public object data { get; set; }
          
     }
 }

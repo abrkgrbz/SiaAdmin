@@ -5,9 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SiaAdmin.Application.Interfaces;
+using SiaAdmin.Application.Interfaces.User;
+using SiaAdmin.Application.ProcedureRepositories.PanelistSaatKullanimi;
+using SiaAdmin.Application.ProcedureRepositories.TanitimAnketiDolduran;
+using SiaAdmin.Application.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Application.Repositories;
+using SiaAdmin.Application.Repositories.OTPHistory;
 using SiaAdmin.Persistence.Contexts;
+using SiaAdmin.Persistence.ProcedureRepositories.PanelistSaatKullanimi;
+using SiaAdmin.Persistence.ProcedureRepositories.TanitimAnketiDolduran;
+using SiaAdmin.Persistence.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Persistence.Repositories;
+using SiaAdmin.Persistence.Repositories.OTPHistory;
+using SiaAdmin.Persistence.Services;
 
 namespace SiaAdmin.Persistence
 {
@@ -32,12 +43,19 @@ namespace SiaAdmin.Persistence
             services.AddScoped<ISurveyWriteRepository, SurveyWriteRepository>();
             services.AddScoped<ISurveyAssignedReadRepository, SurveyAssignedReadRepository>();
             services.AddScoped<ISurveyAssignedWriteRepository, SurveyAssignedWriteRepository>();
+            services.AddScoped<IOTPHistoryReadRepository, OTPHistoryReadRepository>();
+            services.AddScoped<IOTPHistoryWriteRepository, OTPHistoryWriteRepository>();
             services.AddScoped<ISurveyLogReadRepository, SurveyLogReadRepository>();
             services.AddScoped<ISurveyLogWriteRepository, SurveyLogWriteRepository>();
             services.AddScoped<IUserReadRepository, UserReadRepository>();
             services.AddScoped<IUserWriteRepository, UserWriteRepository>();
             services.AddScoped<IWaitDataReadRepository, WaitDataReadRepository>();
 
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IGetTotalSurveyInformation, GetTotalSurveyInformation>();
+            services.AddScoped<IGetPerformancePanelistPerformance, GetPerformancePanelistPerformance>();
+            services.AddScoped<IGetNumberOfFillingSurveyIntro, GetNumberOfFillingSurveyIntro>();
         }
     }
 }

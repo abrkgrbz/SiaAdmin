@@ -8,7 +8,7 @@ using SiaAdmin.Application.Repositories;
 namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [NonController]
     public class BlockListController : BaseApiController
     {
         private IMediator _mediator;

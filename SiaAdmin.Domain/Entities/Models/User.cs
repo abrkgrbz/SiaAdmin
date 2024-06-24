@@ -8,7 +8,7 @@ using SiaAdmin.Domain.Entities.Common;
 namespace SiaAdmin.Domain.Entities.Models
 {
     public partial class User : BaseEntity
-    {
+    { 
         public Guid InternalGuid { get; set; }
 
         public Guid SurveyUserGuid { get; set; }

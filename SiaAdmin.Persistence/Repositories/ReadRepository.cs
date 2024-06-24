@@ -57,6 +57,8 @@ namespace SiaAdmin.Persistence.Repositories
             return (IQueryable<T1>)q.Provider.CreateQuery<T>(mce);
         }
 
+       
+
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true)
         {
             var query = Table.AsQueryable();

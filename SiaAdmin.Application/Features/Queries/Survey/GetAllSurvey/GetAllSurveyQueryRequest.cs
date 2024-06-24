@@ -9,10 +9,8 @@ namespace SiaAdmin.Application.Features.Queries.Survey.GetAllSurvey
 {
     public class GetAllSurveyQueryRequest:IRequest<GetAllSurveyQueryResponse>
     {
-     
-        public int length { get; set; }
+
         public int start { get; set; }
-   
-      
+        public int length { get; set; }
     }
 }

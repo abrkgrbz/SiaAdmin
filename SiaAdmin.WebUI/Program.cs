@@ -1,7 +1,38 @@
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using SiaAdmin.Application;
+using SiaAdmin.Application.Validators.Survey;
+using SiaAdmin.Infrastructure;
+using SiaAdmin.Infrastructure.Filters;
+using SiaAdmin.Persistence;
+using SiaAdmin.WebUI.Extensions;
+using SiaAdmin.WebUI.Middlewares;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options => { options.Filters.Add<ValidationFilter>(); })
+    .AddFluentValidation(configuration =>
+        configuration.RegisterValidatorsFromAssemblyContaining<CreateSurveyValidator>())
+    .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true).AddRazorRuntimeCompilation();
+builder.Services.AddPersistenceServices();
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddControllers();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("RoleType", "Admin"));
+    options.AddPolicy("User", policy => policy.RequireClaim("RoleType", "User"));
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+    options.LoginPath = "/User/Login";
+    options.AccessDeniedPath = "/User/AccessDenied";
+});
 
 var app = builder.Build();
 
@@ -13,12 +44,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+ 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

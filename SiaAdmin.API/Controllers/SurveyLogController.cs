@@ -6,7 +6,7 @@ using SiaAdmin.Application.Features.Commands.SurveyLog.CreateSurveyLog;
 namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [NonController]
     public class SurveyLogController : ControllerBase
     {
         private IMediator _mediator;

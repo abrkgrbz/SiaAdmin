@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "PointCheck";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card"> 
+    <div class="card-body"> 
+        <div class="card-px text-center pt-15 pb-15"> 
+            <h2 class="fs-2x fw-bolder mb-2">Puan Kontrol</h2> 
+            <form id="kt_docs_formvalidation_text" class="form" action="#" autocomplete="off"> 
+                <div class="fv-row mb-10">
+
+                    <input type="text" name="SurveyUserGUID" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Lütfen Kullanıcı User GUID Bilgisi Giriniz" value="" />
+
+                </div> 
+                <button id="kt_docs_formvalidation_text_submit" type="submit" class="btn btn-primary">
+                    <span class="indicator-label">
+                        Kontrol Et
+                    </span>
+                    <span class="indicator-progress">
+                        Lütfen Bekleyin... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button> 
+            </form> 
+        </div> 
+        <div class="text-center pb-15 px-5">
+            <img src="~/assets/media/illustrations/dozzy-1/19.png" alt="" class="mw-100 h-200px h-sm-325px">
+        </div> 
+    </div> 
+</div>
+
+@section js{
+    <script src="js/point/pointcheck.js"></script>
+}

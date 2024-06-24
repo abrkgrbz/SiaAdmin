@@ -20,7 +20,7 @@ namespace SiaAdmin.Domain.Entities.Models
         public string? SurveyRedirect { get; set; }
         public int SurveyPoints { get; set; }
         public int? Mandatory { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }=DateTime.Now;
         public string? DBAddress { get; set; }
         public string? DPPass { get; set; }
         public string? DPUser { get; set; }

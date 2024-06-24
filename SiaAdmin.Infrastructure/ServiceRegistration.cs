@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SiaAdmin.Application.DTOs.Excel;
 using SiaAdmin.Application.Interfaces.ConvertExcel;
 using SiaAdmin.Application.Interfaces.Excel;
+using SiaAdmin.Application.Interfaces.Sms;
 using SiaAdmin.Infrastructure.Services;
 
 namespace SiaAdmin.Infrastructure
@@ -18,6 +19,7 @@ namespace SiaAdmin.Infrastructure
         {
             services.AddSingleton<IExcelService, ExcelService>();
             services.AddSingleton<IConvertExcelFile, ConvertExcelFileService>();
+            services.AddSingleton<ISmsService, SmsService>();
         }
     }
 }

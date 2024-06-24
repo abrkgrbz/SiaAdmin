@@ -38,13 +38,13 @@ namespace SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey
                 recordTotal = surveyList.Count();
             }
 
-            var surveys =await surveyList.Skip(request.start).Take(request.length).ToListAsync();
+            var surveys =await surveyList.Skip(request.Start).Take(request.Length).ToListAsync();
             if (surveys == null) throw new Exception("Anket bulunamadı");
             return new GetDataTableSurveyQueryResponse()
             {
                 recordTotal = recordTotal,
                 recordsFiltered = recordsFiltered,
-                SurveyList = surveys
+                data = surveys
             };
         }
     }

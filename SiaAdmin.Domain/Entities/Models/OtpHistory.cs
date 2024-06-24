@@ -23,5 +23,6 @@ namespace SiaAdmin.Domain.Entities.Models
         public string? LastBrowser { get; set; }
 
         public string? TrackingId { get; set; }
+        public int Source { get; set; }
     }
 }

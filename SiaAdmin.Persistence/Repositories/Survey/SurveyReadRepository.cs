@@ -19,9 +19,9 @@ namespace SiaAdmin.Persistence.Repositories
             _surveys = context.Set<Survey>();
         }
 
-        public Task<bool> IsUniqueSurvey(int surveyId)
+        public bool  IsUniqueSurvey(int surveyId)
         {
-            return _surveys.AllAsync(x=>x.Id!=surveyId);
+            return _surveys.All(x=>x.Id!=surveyId);
         }
     }
 }

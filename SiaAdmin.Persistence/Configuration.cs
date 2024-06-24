@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SiaAdmin.Persistence
 {
-    static class Configuration
+    static public class Configuration
     {
         static public string ConnectionString
         {

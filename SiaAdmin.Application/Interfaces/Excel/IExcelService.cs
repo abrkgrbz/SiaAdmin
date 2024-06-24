@@ -12,11 +12,11 @@ using SiaAdmin.Application.Enums;
 namespace SiaAdmin.Application.Interfaces.Excel
 {
     public interface IExcelService
-    { 
+    {
         DataTable readExcel(IFormFile file);
-        Task<FileResult> downloadExcel(string type);
+        Task<byte[]> downloadExcel(string type);
 
-    
+
 
     }
 }

@@ -7,7 +7,7 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
     public class CreateSurveyHandler:IRequestHandler<CreateSurveyRequest,CreateSurveyResponse>
     {
         private readonly ISurveyWriteRepository _surveyWriteRepository;
-        IMapper _mapper;
+        private IMapper _mapper;
         public CreateSurveyHandler(ISurveyWriteRepository surveyWriteRepository, IMapper mapper)
         {
             _surveyWriteRepository = surveyWriteRepository;
@@ -18,8 +18,8 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
         {
             try
             {
-                var mappingProfile = _mapper.Map<Domain.Entities.Models.Survey>(request.createSurvey);
-                var addedSurvey = await _surveyWriteRepository.AddAsync(mappingProfile);
+                var mappingProfile = _mapper.Map<Domain.Entities.Models.Survey>(request);
+                await _surveyWriteRepository.AddAsync(mappingProfile);
                 await _surveyWriteRepository.SaveAsync();
                 return new() { Succeeded = true,Message = "Anket Ekleme İşlemi Başarıyla Gerçekleştirildi."};
             }

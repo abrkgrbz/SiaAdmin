@@ -46,7 +46,7 @@ namespace SiaAdmin.Application.Features.Queries.FilterData.GetDataTableFilterDat
                 draw = request.draw,
                 recordTotal = recordTotal,
                 recordsFiltered = recordsFiltered,
-                FilterDatas = newList
+                data = newList
             };
         }
     }

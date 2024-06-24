@@ -9,5 +9,6 @@ namespace SiaAdmin.Application.Repositories
 {
     public interface ISiaUserReadRepository:IReadRepository<SiaUser>
     {
+        public bool IsUniqueUsername(string username);
     }
 }

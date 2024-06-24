@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SiaAdmin.Domain.Entities.Models;
+using SiaAdmin.Domain.Entities.Procedure;
 
 namespace SiaAdmin.Persistence.Contexts
 {
@@ -27,12 +28,20 @@ namespace SiaAdmin.Persistence.Contexts
         public virtual DbSet<OtpHistory> Otphistories { get; set; }
         public virtual DbSet<Scm> Scms { get; set; }
         public virtual DbSet<FilterData> FilterData { get; set; }
-        public virtual DbSet<SurveyAssigned> SurveysAssigneds { get; set; }
-        
+        public virtual DbSet<SurveyAssigned> SurveysAssigneds { get; set; } 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WaitData> WaitData { get; set; }
         public virtual DbSet<SurveyLog> SurveyLogs { get; set; }
         public virtual DbSet<EODTable> Eodtables { get; set; }
+
+
+        #region Stored Procedure
+
+        public virtual DbSet<ToplamAnketBilgisi> ToplamAnketBilgisi { get; set; }
+        public virtual DbSet<PanelistSaatKullanimi> PanelistSaatKullanimi { get; set; }
+
+        public virtual DbSet<TanitimAnketiDolduran> TanitimAnketiDolduran { get; set; }
+        #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -218,8 +227,7 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.SurveyUserGuid).HasColumnName("SurveyUserGUID");
                 entity.Property(e => e.Tarih).HasColumnType("datetime");
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-            });
-
+            }); 
             modelBuilder.Entity<EODTable>(entity =>
             {
                 entity.ToTable("EODTable");
@@ -242,6 +250,20 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.SurveyText).HasMaxLength(50);
                 entity.Property(e => e.SurveyValidity).HasColumnType("datetime");
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
+            });
+            modelBuilder.Entity<ToplamAnketBilgisi>().HasNoKey();
+            modelBuilder.Entity<TanitimAnketiDolduran>().HasNoKey();
+            modelBuilder.Entity<PanelistSaatKullanimi>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.Pazartesi).HasColumnName("1");
+                entity.Property(e => e.Sali).HasColumnName("2");
+                entity.Property(e => e.Carsamba).HasColumnName("3");
+                entity.Property(e => e.Persembe).HasColumnName("4");
+                entity.Property(e => e.Cuma).HasColumnName("5");
+                entity.Property(e => e.Cumartesi).HasColumnName("6");
+                entity.Property(e => e.Pazar).HasColumnName("7");
+
             });
             OnModelCreatingPartial(modelBuilder);
 

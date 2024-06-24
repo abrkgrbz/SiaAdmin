@@ -11,6 +11,6 @@ namespace SiaAdmin.Application.Features.Queries.FilterData.GetDataTableFilterDat
         public string draw { get; set; }
         public int recordsFiltered { get; set; }
         public int recordTotal { get; set; }
-        public object FilterDatas { get; set; }
+        public object data { get; set; }
     }
 }

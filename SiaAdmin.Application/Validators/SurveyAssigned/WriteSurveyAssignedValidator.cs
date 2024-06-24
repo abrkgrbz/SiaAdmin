@@ -10,10 +10,10 @@ namespace SiaAdmin.Application.Validators.SurveyAssigned
 {
     public class WriteSurveyAssignedValidator:AbstractValidator<Domain.Entities.Models.SurveyAssigned>
     { 
-        private readonly ISurveyAssignedWriteRepository _surveyAssignedWriteRepository;
-        public WriteSurveyAssignedValidator(ISurveyAssignedWriteRepository surveyAssignedWriteRepository)
+        private readonly ISurveyAssignedReadRepository _surveyAssignedReadRepository;
+        public WriteSurveyAssignedValidator(ISurveyAssignedReadRepository surveyAssignedReadRepository)
         {
-            _surveyAssignedWriteRepository = surveyAssignedWriteRepository;
+            _surveyAssignedReadRepository = surveyAssignedReadRepository;
 
 
             RuleFor(m => new { m.SurveyId, m.InternalGuid })
@@ -23,7 +23,7 @@ namespace SiaAdmin.Application.Validators.SurveyAssigned
 
         private bool IsDuplicatedGuid(int surveyId, Guid internalGuid)
         {
-            return _surveyAssignedWriteRepository.IsDuplicatedGuid(surveyId, internalGuid);
+            return _surveyAssignedReadRepository.IsDuplicatedGuid(surveyId, internalGuid);
         }
     }
 }

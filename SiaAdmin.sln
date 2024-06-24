@@ -9,17 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B87982AB-328D-4CE6-AD42-AF58F117106B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.Application", "SiaAdmin.Application\SiaAdmin.Application.csproj", "{E8F155CC-DC0E-42B4-9658-A7BBC5CF4651}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.Application", "SiaAdmin.Application\SiaAdmin.Application.csproj", "{E8F155CC-DC0E-42B4-9658-A7BBC5CF4651}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.Domain", "SiaAdmin.Domain\SiaAdmin.Domain.csproj", "{B5641B06-7563-4A7C-8A5E-26841117EC9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.Domain", "SiaAdmin.Domain\SiaAdmin.Domain.csproj", "{B5641B06-7563-4A7C-8A5E-26841117EC9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.Infrastructure", "SiaAdmin.Infrastructure\SiaAdmin.Infrastructure.csproj", "{1090519C-2457-4E04-A1BD-0242D3B6B875}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.Infrastructure", "SiaAdmin.Infrastructure\SiaAdmin.Infrastructure.csproj", "{1090519C-2457-4E04-A1BD-0242D3B6B875}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.Persistence", "SiaAdmin.Persistence\SiaAdmin.Persistence.csproj", "{BE3A09F3-1F42-4EBD-8B61-C74A37595FD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.Persistence", "SiaAdmin.Persistence\SiaAdmin.Persistence.csproj", "{BE3A09F3-1F42-4EBD-8B61-C74A37595FD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.API", "SiaAdmin.API\SiaAdmin.API.csproj", "{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.API", "SiaAdmin.API\SiaAdmin.API.csproj", "{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.WebUI", "SiaAdmin.WebUI\SiaAdmin.WebUI.csproj", "{956F89CF-38BA-4E81-B5C6-2F081AB06BDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.WebUI", "SiaAdmin.WebUI\SiaAdmin.WebUI.csproj", "{576B6145-22C7-411F-8880-483D8126F372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,10 @@ Global
 		{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{956F89CF-38BA-4E81-B5C6-2F081AB06BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{956F89CF-38BA-4E81-B5C6-2F081AB06BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{956F89CF-38BA-4E81-B5C6-2F081AB06BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{956F89CF-38BA-4E81-B5C6-2F081AB06BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{576B6145-22C7-411F-8880-483D8126F372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576B6145-22C7-411F-8880-483D8126F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576B6145-22C7-411F-8880-483D8126F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{576B6145-22C7-411F-8880-483D8126F372}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,7 +61,7 @@ Global
 		{1090519C-2457-4E04-A1BD-0242D3B6B875} = {813D2A54-270B-4EFA-9610-AF404BE55DC4}
 		{BE3A09F3-1F42-4EBD-8B61-C74A37595FD2} = {813D2A54-270B-4EFA-9610-AF404BE55DC4}
 		{D9CA6466-D5A6-47A5-B680-D24568D7A8E9} = {B87982AB-328D-4CE6-AD42-AF58F117106B}
-		{956F89CF-38BA-4E81-B5C6-2F081AB06BDA} = {B87982AB-328D-4CE6-AD42-AF58F117106B}
+		{576B6145-22C7-411F-8880-483D8126F372} = {B87982AB-328D-4CE6-AD42-AF58F117106B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ACAB4D67-B14B-42C4-9FA7-6A983A951BDB}

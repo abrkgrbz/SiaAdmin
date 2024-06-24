@@ -9,6 +9,6 @@ namespace SiaAdmin.Application.Repositories
 {
     public interface ISurveyReadRepository:IReadRepository<Survey>
     {
-        Task<bool> IsUniqueSurvey(int surveyId);
+        bool IsUniqueSurvey(int surveyId);
     }
 }

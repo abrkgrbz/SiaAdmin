@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "UploadBlockedUserView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="card-px text-center pt-15 pb-15">
+            <h2 class="fs-2x fw-bolder mb-0 text-uppercase text-dark">Bloklu Kullanıcı Listesi Yükleme Noktası</h2>
+
+            <form id="point_add_form" class="form" action="#" enctype="multipart/form-data">
+                <div class="fv-row mb-10">
+                    <input type="file" class="form-control mb-2 mt-2" name="blacklist_excel_file" id="customFile">
+                </div>
+                <button id="submitPointExcelFile" type="submit" class="btn btn-dark er fs-6 px-8 py-4 mt-4">
+                    <span class="indicator-label">
+                        Blok Listesi Yükle
+                    </span>
+                    <span class="indicator-progress">
+                        Lütfen Bekleyiniz... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <a href="@Url.Action("downloadFile")" type="button" class="btn btn-dark er fs-6 px-8 py-4 mt-4">
+                    <span class="indicator-label">
+                        Şablon İndir
+                    </span>
+
+                </a>
+            </form>
+        </div>
+
+        <div class="text-center pb-15 px-5">
+            <img src="~/assets/media/illustrations/sigma-1/4-dark.png" alt="" class="mw-100 h-200px h-sm-325px">
+        </div>
+    </div>
+</div>
+
+@section js{
+    <script src="js/blockeduser/UploadBlockUser.js"></script>
+}

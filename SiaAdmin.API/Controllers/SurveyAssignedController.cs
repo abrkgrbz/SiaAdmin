@@ -7,7 +7,7 @@ using SiaAdmin.Application.Features.Queries.SurveyAssigned.GetAllSurveyAssigned;
 namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [NonController]
     public class SurveyAssignedController : ControllerBase
     {
         private IMediator _mediator;

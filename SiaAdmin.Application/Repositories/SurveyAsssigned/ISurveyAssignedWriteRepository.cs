@@ -10,6 +10,6 @@ namespace SiaAdmin.Application.Repositories
 {
     public interface ISurveyAssignedWriteRepository : IWriteRepository<SurveyAssigned>
     {
-        bool IsDuplicatedGuid(int surveyId, Guid internalGuid);
+     
     }
 }
