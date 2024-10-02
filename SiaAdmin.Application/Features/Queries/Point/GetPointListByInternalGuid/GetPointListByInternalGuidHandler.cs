@@ -29,10 +29,10 @@ namespace SiaAdmin.Application.Features.Queries.Point.GetPointListByInternalGuid
             if (data==null)
             {
                 throw new ApiException("Data bulunamadı");
-            }
-            var mappingProfile = _mapper.Map<List<GetPointListViewModel>>(data);
-             
-            return new GetPointListByInternalGuidResponse() { GetPointListViewModels = mappingProfile,ResponseCode = (int)HttpStatusCode.Accepted};
+            } 
+            //var mappingProfile = _mapper.Map<List<GetPointListViewModel>>(data);
+            int total = data.Sum(x => x.SurveyPoints); 
+            return new GetPointListByInternalGuidResponse() { TotalPoint = total,ResponseCode = (int)HttpStatusCode.Accepted};
         }
     }
 }

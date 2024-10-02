@@ -9,6 +9,7 @@ namespace SiaAdmin.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [NonController]
     public class OTPHistoryController : BaseApiController
     {
         
@@ -32,12 +33,7 @@ namespace SiaAdmin.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GetUserInfo")]
-        public async Task<IActionResult> GetUserInfo([FromQuery]  GetByPhoneNumberUserRequest getByPhoneNumberUserRequest)
-        {
-            var response = await Mediator.Send(getByPhoneNumberUserRequest);
-            return Ok(response);
-        }
+  
 
     }
 }

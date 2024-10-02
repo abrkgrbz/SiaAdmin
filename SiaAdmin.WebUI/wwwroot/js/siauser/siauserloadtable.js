@@ -16,11 +16,11 @@ var KTDatatablesServerSide = function () {
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[1, "desc"]],
+            order: [[0, "desc"]],
             stateSave: true,
 
 
-            columns: [
+            columns: [ 
                 { data: "surveyUserGuid", name: "SurveyUserGuid" },
                  
             ],
@@ -29,7 +29,7 @@ var KTDatatablesServerSide = function () {
                 {
                     targets: 1,
                     render: function (data, type, row) { 
-                        return `<a href="/panelist-profili/${row.surveyUserGuid}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
+                        return `<a href="/panelist-profil/${row.surveyUserGuid}" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
 																	<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
 																	<span class="svg-icon svg-icon-2">
 																		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -59,35 +59,11 @@ var KTDatatablesServerSide = function () {
             dt.search(e.target.value).draw();
         });
     }
-    var handleFilterDatatable = () => {
-        filterPayment = document.querySelectorAll('[data-kt-docs-table-filter="payment_type"] [name="payment_type"]');
-        const filterButton = document.querySelector('[data-kt-docs-table-filter="filter"]');
 
-        filterButton.addEventListener('click', function () {
-            let paymentValue = '';
-
-            filterPayment.forEach(r => {
-                if (r.checked) {
-                    paymentValue = r.value;
-                }
-
-                if (paymentValue === 'all') {
-                    paymentValue = '';
-                }
-            });
-
-            dt.search(paymentValue).draw();
-        });
-    }
-    var handleResetForm = () => {
-
-        const resetButton = document.querySelector('[data-kt-subscription-table-filter="reset"]');
-
-
-        resetButton.addEventListener('click', function () {
-
-            filterPayment[0].checked = true;
-            dt.search('').draw();
+    var refreshDatatable = function () {
+        const refreshButton = document.getElementById("table_refresh");
+        refreshButton.addEventListener('click', function (e) {
+            dt.search("").draw();
         });
     }
 
@@ -95,7 +71,7 @@ var KTDatatablesServerSide = function () {
         init: function () {
             initDatatable();
             handleSearchDatatable();
-            handleResetForm();
+            refreshDatatable();
         }
     }
 }();

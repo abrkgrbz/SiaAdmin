@@ -38,8 +38,8 @@ namespace SiaAdmin.Application.Features.Commands.OTPHistory.CreateOTPHistory
                 Source = 2,
                 Otp = randomNumber
             };
-            var insertDb = _otpHistoryWriteRepository.AddAsync(insertObj);
-            _otpHistoryWriteRepository.SaveAsync();
+            var insertDb = await _otpHistoryWriteRepository.AddAsync(insertObj);
+            await _otpHistoryWriteRepository.SaveAsync();
             if (request.PhoneNumber.Equals("5000000000"))
             {
                 //Do Nothing
@@ -60,7 +60,8 @@ namespace SiaAdmin.Application.Features.Commands.OTPHistory.CreateOTPHistory
 
             return new CreateOTPHistoryResponse()
             {
-                Code = randomNumber
+                Code = randomNumber,
+                Success = true
             };
         }
 
@@ -73,8 +74,10 @@ namespace SiaAdmin.Application.Features.Commands.OTPHistory.CreateOTPHistory
             }
             else
             {
+
                 Random rnd = new Random();
-                randomNumber = (rnd.Next(0, 9999)).ToString();
+                randomNumber = "0000"+(rnd.Next(0, 9999)).ToString();
+                randomNumber = randomNumber.Substring(randomNumber.Length - 4);
             }
 
             return randomNumber;

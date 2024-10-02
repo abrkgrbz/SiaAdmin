@@ -11,5 +11,6 @@ namespace SiaAdmin.Application.Features.Commands.SurveyLog.CreateSurveyLog
     public class CreateSurveyLogRequest:IRequest<CreateSurveyLogResponse>
     {
         public IFormFile ExcelFile { get; set; }
+        public string UserId { get; set; }
     }
 }

@@ -46,10 +46,11 @@ submitButton.addEventListener('click', function (e) {
                         success: function (data) {
                             submitButton.removeAttribute('data-kt-indicator');
                             submitButton.disabled = false;
-                             
-                            if (data.ResponseCode === 202) {
+                           
+                            if (data.responseCode === 202) {
+                               
                                 Swal.fire({
-                                    text: data,
+                                    text: "Toplam puanı: "+data.totalPoint,
                                     icon: "success",
                                     buttonsStyling: false,
                                     confirmButtonText: "Tamam",
@@ -62,7 +63,7 @@ submitButton.addEventListener('click', function (e) {
                                         setTimeout(function () {
                                             location.reload(true)
                                         },
-                                            2500);
+                                             500);
                                     }
                                 });
 
@@ -83,7 +84,7 @@ submitButton.addEventListener('click', function (e) {
                                         setTimeout(function () {
                                             location.reload(true)
                                         },
-                                            2500);
+                                            1500);
                                     }
                                 });
 

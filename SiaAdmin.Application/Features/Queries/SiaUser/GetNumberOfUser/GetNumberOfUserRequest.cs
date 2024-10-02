@@ -9,6 +9,7 @@ namespace SiaAdmin.Application.Features.Queries.SiaUser.GetNumberOfUser
 {
     public class GetNumberOfUserRequest:IRequest<GetNumberOfUserResponse>
     {
+      
         public bool isDistinct { get; set; }
     }
 }

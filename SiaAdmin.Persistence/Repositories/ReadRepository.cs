@@ -20,10 +20,11 @@ namespace SiaAdmin.Persistence.Repositories
             _context = context;
         }
 
-        public DbSet<T> Table => _context.Set<T>();
+        public DbSet<T> Table => _context.Set<T>();  
 
         public IQueryable<T> GetAll(bool tracking = true)
         {
+             
             var query = Table.AsQueryable();
             if (!tracking)
                 query = query.AsNoTracking();
@@ -57,7 +58,17 @@ namespace SiaAdmin.Persistence.Repositories
             return (IQueryable<T1>)q.Provider.CreateQuery<T>(mce);
         }
 
-       
+        public async Task<List<T>> GetSqlListAsync(string query)
+        {
+            return await Table.FromSqlRaw(query).AsNoTracking().ToListAsync();
+        }
+
+     
+        
+        public IQueryable<T> GetSql(string query)
+        {
+            return Table.FromSqlRaw(query).AsNoTracking().AsQueryable();
+        }
 
         public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true)
         {

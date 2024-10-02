@@ -21,7 +21,13 @@ namespace SiaAdmin.Persistence.Repositories
 
         public bool IsUniqueUsername(string username)
         {
-            return _siaUsers.All(x => x.UserName != username);
+            var user = _siaUsers.FirstOrDefault(x => x.UserName == username.ToLower());
+            if (user!=null)
+            {
+                return false;
+
+            }
+            return true;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey
             {
                 recordTotal = recordTotal,
                 recordsFiltered = recordsFiltered,
-                data = surveys
+                data = surveys 
             };
         }
     }

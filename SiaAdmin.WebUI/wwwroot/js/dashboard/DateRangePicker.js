@@ -48,10 +48,4 @@ $("#kt_daterangepicker_1").daterangepicker({
         'Geçen Yıl': [moment().startOf('year').format('01/01/2023'), moment().startOf('year') - 1],
 
     }
-}).on('apply.daterangepicker', function (ev, picker) {
-    var startDate = picker.startDate.format('YYYY-MM-DD');
-    var endDate = picker.endDate.format('YYYY-MM-DD');
-    console.log(`startDate = ${startDate}, endDate = ${endDate}`);
-
-    FilterByDateRange(startDate, endDate);
 });

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SiaAdmin.Domain.Entities.Custom;
 using SiaAdmin.Domain.Entities.Models;
 using SiaAdmin.Domain.Entities.Procedure;
 
@@ -28,12 +29,28 @@ namespace SiaAdmin.Persistence.Contexts
         public virtual DbSet<OtpHistory> Otphistories { get; set; }
         public virtual DbSet<Scm> Scms { get; set; }
         public virtual DbSet<FilterData> FilterData { get; set; }
-        public virtual DbSet<SurveyAssigned> SurveysAssigneds { get; set; } 
+        public virtual DbSet<SurveyAssigned> SurveysAssigneds { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WaitData> WaitData { get; set; }
         public virtual DbSet<SurveyLog> SurveyLogs { get; set; }
         public virtual DbSet<EODTable> Eodtables { get; set; }
+        public virtual DbSet<AuditLogs> AuditLogs { get; set; }
+        public virtual DbSet<DeviceRegistrations> DeviceRegistrations { get; set; }
 
+        #region Custom
+
+        public virtual DbSet<UserProfile> UserProfiles { get; set; }
+        public virtual DbSet<UserRecievedGifts> UserRecievedGifts { get; set; }
+        public virtual DbSet<UserSelectIncentive> UserSelectIncentives { get; set; }
+        public virtual DbSet<UserSurvey> UserSurveys { get; set; }
+        public virtual DbSet<UserSurveyPoints> UserSurveyPoints { get; set; }
+        public virtual DbSet<UserTransactionLogs> UserTransactionLogs { get; set; }
+        public virtual DbSet<LastSeenAdet> LastSeenAdets { get; set; }
+        public virtual DbSet<LastSeenSaat> LastSeenSaats { get; set; }
+        public virtual DbSet<MukerreKayit> MukerreKayits { get; set; }
+        public virtual DbSet<CustomWaitData> CustomWaitDatas { get; set; }
+        public virtual DbSet<UserSurveyInfo> UserSurveyInfos { get; set; }
+        #endregion
 
         #region Stored Procedure
 
@@ -107,6 +124,11 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.Surname).HasMaxLength(50);
                 entity.Property(e => e.UserGUID).HasColumnName("UserGUID");
                 entity.Property(e => e.UserName).HasMaxLength(150);
+            });
+            modelBuilder.Entity<DeviceRegistrations>(entity =>
+            {
+                entity.Property(e => e.TimeStamp).HasColumnType("datetime");
+                entity.Property(e => e.InternalGUID).HasColumnName("InternalGUID");
             });
             modelBuilder.Entity<OtpHistory>(entity =>
             {
@@ -183,7 +205,7 @@ namespace SiaAdmin.Persistence.Contexts
                     .HasMaxLength(80)
                     .IsUnicode(false);
                 entity.Property(e => e.InternalGuid).HasColumnName("InternalGUID");
-                entity.Property(e => e.Iys)
+                entity.Property(e => e.IYS)
                     .HasColumnType("datetime")
                     .HasColumnName("IYS");
                 entity.Property(e => e.LastFailedLogin).HasColumnType("datetime");
@@ -206,13 +228,13 @@ namespace SiaAdmin.Persistence.Contexts
                     .HasMaxLength(4)
                     .IsUnicode(false);
                 entity.Property(e => e.RegistrationDate).HasColumnType("datetime");
-                entity.Property(e => e.Scmtarihi)
+                entity.Property(e => e.SCMTarihi)
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("SCMTarihi");
                 entity.Property(e => e.Surname).HasMaxLength(100);
                 entity.Property(e => e.SurveyUserGuid).HasColumnName("SurveyUserGUID");
-                entity.Property(e => e.Tckno)
+                entity.Property(e => e.TCKNo)
                     .HasMaxLength(11)
                     .IsUnicode(false)
                     .HasColumnName("TCKNo");
@@ -227,7 +249,7 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.SurveyUserGuid).HasColumnName("SurveyUserGUID");
                 entity.Property(e => e.Tarih).HasColumnType("datetime");
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-            }); 
+            });
             modelBuilder.Entity<EODTable>(entity =>
             {
                 entity.ToTable("EODTable");
@@ -250,9 +272,7 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.SurveyText).HasMaxLength(50);
                 entity.Property(e => e.SurveyValidity).HasColumnType("datetime");
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-            });
-            modelBuilder.Entity<ToplamAnketBilgisi>().HasNoKey();
-            modelBuilder.Entity<TanitimAnketiDolduran>().HasNoKey();
+            }); 
             modelBuilder.Entity<PanelistSaatKullanimi>(entity =>
             {
                 entity.HasNoKey();
@@ -265,6 +285,25 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.Pazar).HasColumnName("7");
 
             });
+
+
+            #region HasNoKeyModels
+            modelBuilder.Entity<ToplamAnketBilgisi>().HasNoKey();
+            modelBuilder.Entity<TanitimAnketiDolduran>().HasNoKey();
+            modelBuilder.Entity<UserProfile>().HasNoKey();
+            modelBuilder.Entity<UserRecievedGifts>().HasNoKey();
+            modelBuilder.Entity<UserSelectIncentive>().HasNoKey();
+            modelBuilder.Entity<UserSurvey>().HasNoKey();
+            modelBuilder.Entity<UserSurveyInfo>().HasNoKey();
+            modelBuilder.Entity<UserSurveyPoints>().HasNoKey();
+            modelBuilder.Entity<UserTransactionLogs>().HasNoKey();
+            modelBuilder.Entity<LastSeenSaat>().HasNoKey();
+            modelBuilder.Entity<LastSeenAdet>().HasNoKey();
+            modelBuilder.Entity<MukerreKayit>().HasNoKey();
+            modelBuilder.Entity<CustomWaitData>().HasNoKey();
+            #endregion
+
+
             OnModelCreatingPartial(modelBuilder);
 
         }

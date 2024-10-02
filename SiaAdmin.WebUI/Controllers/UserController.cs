@@ -9,12 +9,16 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using SiaAdmin.Application.Features.Commands.User.CreateUser;
 using SiaAdmin.Application.DTOs.Account;
+using SiaAdmin.Application.Features.Queries.User.GetUserList;
+using SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey;
 
 namespace SiaAdmin.WebUI.Controllers
 {
     [AllowAnonymous]
+
     public class UserController : BaseController
     {
+       
         public IActionResult Login()
         {
             return View();
@@ -24,7 +28,7 @@ namespace SiaAdmin.WebUI.Controllers
         {
             return View();
         }
-        
+        [HttpGet("yetkisiz-sayfa")]
         public IActionResult AccessDenied()
         {
             return View();
@@ -38,7 +42,8 @@ namespace SiaAdmin.WebUI.Controllers
             return RedirectToAction("Login", "User");
         }
 
-        [HttpPost("/User/SiaLogin")]
+         
+        [HttpPost("/User/Login")] 
         public async Task<IActionResult> UserLogin(GetUserRequest getUserRequest)
         {
             try
@@ -66,7 +71,7 @@ namespace SiaAdmin.WebUI.Controllers
 
         }
 
-        [HttpPost("/User/SiaRegister")]
+        [HttpPost("User/SiaRegister")] 
         public async Task<IActionResult> UserRegister(CreateUserRequest createUserRequest)
         {
 
@@ -79,5 +84,9 @@ namespace SiaAdmin.WebUI.Controllers
 
 
         }
+
+       
+       
+
     }
 }

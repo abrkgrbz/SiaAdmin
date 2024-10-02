@@ -17,8 +17,15 @@
                     </svg>
                 </span> 
                 <input type="text" data-eod-table-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="GUID Ara..." />
-            </div> 
+            </div>  
         </div> 
+        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+            <!--begin::Export dropdown-->
+            <button type="button"   class="btn btn-info" id="table_refresh"> 
+                Yenile
+            </button>
+             
+        </div>
     </div>
     <div class="card-body py-4">
         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_users">
@@ -35,6 +42,7 @@
     </div>
 </div>
 @section js{
+    
     <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <script src="js/siauser/siauserloadtable.js"></script>
 }

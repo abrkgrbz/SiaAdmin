@@ -9,10 +9,10 @@ namespace SiaAdmin.Application.Interfaces.User
 {
     public interface IUserService
     {
-        public Task<SiaUser> LoginUser(string username, string password);
+        public Task<Domain.Entities.Models.SiaUser> LoginUser(string username, string password);
         public Task<int> GetUserRole(int userId);
         public Task<string> GetRoleType(int roleId);
 
-        public Task<bool> CreateUser(SiaUser user);
+        public Task<bool> CreateUser(Domain.Entities.Models.SiaUser user);
     }
 }

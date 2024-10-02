@@ -11,13 +11,16 @@ using SiaAdmin.Application.ProcedureRepositories.PanelistSaatKullanimi;
 using SiaAdmin.Application.ProcedureRepositories.TanitimAnketiDolduran;
 using SiaAdmin.Application.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Application.Repositories;
+using SiaAdmin.Application.Repositories.DeviceRegistrations;
 using SiaAdmin.Application.Repositories.OTPHistory;
 using SiaAdmin.Persistence.Contexts;
 using SiaAdmin.Persistence.ProcedureRepositories.PanelistSaatKullanimi;
 using SiaAdmin.Persistence.ProcedureRepositories.TanitimAnketiDolduran;
 using SiaAdmin.Persistence.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Persistence.Repositories;
+using SiaAdmin.Persistence.Repositories.DeviceRegistrations;
 using SiaAdmin.Persistence.Repositories.OTPHistory;
+using SiaAdmin.Persistence.Repositories.UserLog;
 using SiaAdmin.Persistence.Services;
 
 namespace SiaAdmin.Persistence
@@ -50,6 +53,10 @@ namespace SiaAdmin.Persistence
             services.AddScoped<IUserReadRepository, UserReadRepository>();
             services.AddScoped<IUserWriteRepository, UserWriteRepository>();
             services.AddScoped<IWaitDataReadRepository, WaitDataReadRepository>();
+            services.AddScoped<IUserLogReadRepository, UserLogReadRepository>();
+            services.AddScoped<IUserLogWriteRepository, UserLogWriteRepository>();
+            services.AddScoped<IDeviceRegistrationsWriteRepository, DeviceRegistrationsWriteRepository>();
+            services.AddScoped<IDeviceRegistrationsReadRepository, DeviceRegistrationsReadRepository>();
 
             services.AddScoped<IUserService, UserService>();
 

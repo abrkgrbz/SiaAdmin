@@ -35,8 +35,8 @@ namespace SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssi
         {
 
             var excelList = _excelService.readExcel(request.ExcelFile);
-            var survey = _surveyReadRepository.GetByIdAsync(request.SurveyId);
-            var mappingMapSurveyAssigned = _mapper.Map<DTOs.SurveyAssigned.MapSurveyAssigned>(survey.Result);
+            var survey = await _surveyReadRepository.GetByIdAsync(request.SurveyId);
+            var mappingMapSurveyAssigned = _mapper.Map<DTOs.SurveyAssigned.MapSurveyAssigned>(survey);
             if (excelList.TableName.Equals(ExcelTable.InternalGUID.ToString()))
             {
                 var guids = _convertExcelFile.convertedInternalGuidDTO(excelList);
@@ -61,9 +61,10 @@ namespace SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssi
                         Timestamp = mappingMapSurveyAssigned.Timestamp,
                         SurveyActive = mappingMapSurveyAssigned.SurveyActive
                     });
-                    await _surveyAssignedWriteRepository.SaveAsync();
-
+               
                 }
+                await _surveyAssignedWriteRepository.SaveAsync(request.userId, true);
+
             }
 
             if (excelList.TableName.Equals(ExcelTable.SurveyUserGUID.ToString()))
@@ -73,7 +74,9 @@ namespace SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssi
                 foreach (var item in convertedGuids)
                 {
 
-
+                    var isExist = await _surveyAssignedReadRepository.GetSingleAsync(x => x.InternalGuid == item && x.SurveyId == request.SurveyId, false);
+                    if (isExist != null)
+                        throw new ApiException("Mükerrer Kayıt bulunmakta");
                     await _surveyAssignedWriteRepository.AddAsync(new Domain.Entities.Models.SurveyAssigned()
                     {
                         SurveyText = mappingMapSurveyAssigned.SurveyText,
@@ -91,7 +94,7 @@ namespace SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssi
 
 
                 }
-                await _surveyAssignedWriteRepository.SaveAsync();
+                await _surveyAssignedWriteRepository.SaveAsync(request.userId,true);
             }
 
             return new CreateSurveyAssignedResponse() { Succeeded = true, Message = "Anket Atama İşlemi Başarıyla Gerçekleştirildi." };

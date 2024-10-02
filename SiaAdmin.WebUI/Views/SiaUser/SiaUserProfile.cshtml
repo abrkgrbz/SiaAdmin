@@ -1,9 +1,379 @@
-﻿@model IEnumerable<SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser.GetByGuidSiaUserViewModel>
+﻿@model SiaUserProfileViewModel
 @{
     ViewData["Title"] = "SiaUserProfile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="d-flex flex-column flex-lg-row">
+    <div class="flex-column flex-lg-row-auto w-lg-250px w-xl-350px mb-10">
+        <!--begin::Card-->
+        <div class="card mb-5 mb-xl-8">
+            <!--begin::Card body-->
+            <div class="card-body">
+                <!--begin::Summary-->
+                <!--begin::User Info-->
+                <div class="d-flex flex-center flex-column py-5">
 
-<h1>SiaUserProfile</h1>
+                    <!--begin::Name-->
+                    <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bolder mb-3">@Model.Name @Model.Surname</a>
 
- 
+                    <!--end::Info heading-->
+                    <div class="d-flex flex-wrap flex-center">
+                        <!--begin::Stats-->
+                        <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
+                            <div class="fs-4 fw-bolder text-gray-700">
+                                <span class="w-75px">@Model.LoginCount</span>
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+                                <span class="svg-icon svg-icon-3 svg-icon-success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor"></rect>
+                                        <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="currentColor"></path>
+                                    </svg>
+                                </span>
+                                <!--end::Svg Icon-->
+                            </div>
+                            <div class="fw-bold text-muted">Login Count</div>
+                        </div>
+                        <!--end::Stats-->
+                        <!--begin::Stats-->
+                        <div class="border border-gray-300 border-dashed rounded py-3 px-3 mx-4 mb-3">
+                            <div class="fs-4 fw-bolder text-gray-700">
+
+                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr065.svg-->
+                                <!--end::Svg Icon-->
+                            </div>
+                            @if (Model.Active == 1)
+                            {
+                                <span class="svg-icon svg-icon-success svg-icon-2hx">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                                        <path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                <div class="fw-bold text-muted">Aktif</div>
+                            }
+                            else
+                            {
+                                <span class="svg-icon svg-icon-danger svg-icon-2hx">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+                                        <rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor" />
+                                        <rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                <div class="fw-bold text-muted">Pasif</div>
+                            }
+                        </div>
+                        <!--end::Stats-->
+
+                    </div>
+                    <!--end::Info-->
+                </div>
+                <!--end::User Info-->
+                <!--end::Summary-->
+                <!--begin::Details toggle-->
+                <div class="d-flex flex-stack fs-4 py-3">
+                    <div class="fw-bolder rotate collapsible" data-bs-toggle="collapse" href="#kt_user_view_details" role="button" aria-expanded="false" aria-controls="kt_user_view_details">
+                        Detay
+                        <span class="ms-2 rotate-180">
+                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
+                            <span class="svg-icon svg-icon-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor"></path>
+                                </svg>
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                    </div>
+                    <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="" data-bs-original-title="Kullanıcıyı Blocke Et">
+                        <a href="#" class="btn btn-sm btn-light-danger" data-bs-toggle="modal" data-bs-target="#kt_modal_update_details">Blocke Et</a>
+                    </span>
+                    <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="" data-bs-original-title="Kullanıcı Profile Geçiş">
+                        <a href="#" class="btn btn-sm btn-light-success">Profile Geçiş</a>
+                    </span>
+
+                    <div class="modal fade" id="kt_modal_update_details" tabindex="-1" aria-hidden="true" data-bs-focus="false">
+                        <div class="modal-dialog modal-dialog-centered mw-650px">
+                            <div class="modal-content">
+                                <div class="modal-header" id="kt_modal_add_user_header">
+                                    <h2 class="fw-bolder">Kullanıcı Bloke Formu</h2>
+                                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close">
+                                        <span class="svg-icon svg-icon-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                                    <form id="user_blocked_form" class="form" action="#">
+                                        <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-bs-focus="false" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header" data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                                            <div class="fv-row mb-7">
+                                                <label class="required fw-bold fs-6 mb-2">Açıklama</label>
+                                                <textarea type="text" name="Note" rows="8" cols="8" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Lütfen Bir Açıklama Giriniz"></textarea>
+                                            </div>
+                                            <input type="hidden" value="@Model.Msisdn" name="Data" />
+
+
+                                        </div>
+                                        <div class="text-center pt-15">
+                                            <button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">Vazgeç</button>
+                                            <button type="submit" class="btn btn-primary" data-kt-users-modal-action="submit">
+                                                <span class="indicator-label">Kaydet</span>
+                                                <span class="indicator-progress">
+                                                    Lütfen Bekleyiniz...
+                                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <!--end::Details toggle-->
+                <div class="separator"></div>
+                <div id="kt_user_view_details" class="collapse show">
+                    <div class="pb-5 fs-6">
+                        <!--begin::Details item-->
+                        <div class="fw-bolder mt-5">Msisdn</div>
+                        <div class="text-gray-600">@Model.Msisdn</div>
+                        <!--begin::Details item-->
+                        <!--begin::Details item-->
+                        <div class="fw-bolder mt-5">Email</div>
+                        <div class="text-gray-600">
+                            <a href="#" class="text-gray-600 text-hover-primary">@Model.Email</a>
+                        </div>
+                        <!--begin::Details item-->
+                        <!--begin::Details item-->
+                        <div class="fw-bolder mt-5">Last IP</div>
+                        <div class="text-gray-600">
+                            @Model.LastIP
+                        </div>
+                        <!--begin::Details item-->
+                        <div class="fw-bolder mt-5">Registration Date</div>
+                        <div class="text-gray-600">@Model.RegistrationDate</div>
+                        <!--begin::Details item-->
+                        <div class="fw-bolder mt-5">Last Login</div>
+                        <div class="text-gray-600">@Model.LastLogin</div>
+                        <!--begin::Details item-->
+                    </div>
+                </div>
+                <!--end::Details content-->
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flex-lg-row-fluid ms-lg-15">
+        <!--begin:::Tabs-->
+        <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-8">
+
+            <!--begin:::Tab item-->
+            <li class="nav-item">
+                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_user_view_overview_events_and_logs_tab">Kullanıcı Geçmişi</a>
+            </li>
+            <!--end:::Tab item-->
+
+        </ul>
+        <!--end:::Tabs-->
+        <!--begin:::Tab content-->
+        <div class="tab-content" id="myTabContent">
+
+            <!--begin:::Tab pane-->
+            <div class="tab-pane fade show active" id="kt_user_view_overview_events_and_logs_tab" role="tabpanel">
+                <div class="card pt-4 mb-6 mb-xl-9">
+                    <table id="kt_datatable_example_1" class="table table-striped table-row-bordered gy-5 gs-7">
+                        <thead>
+                            <tr class="fw-bold fs-6   text-muted">
+                                <th class="min-w-200px">Proje ID</th>
+                                <th class="min-w-200px">Proje Adı</th>
+                                <th class="min-w-150px">Puan</th>
+                                <th class="min-w-100px">Text</th>
+                                <th class="min-w-100px"> </th>
+                            </tr>
+                        </thead>
+                        
+
+                    </table>
+                </div>
+
+
+            </div>
+            <!--end:::Tab pane-->
+        </div>
+        <!--end:::Tab content-->
+    </div>
+
+</div>
+
+
+@section js {
+
+    <script>
+        "use strict";
+        var KTUsersAddUser = function () {
+            const t = document.getElementById("kt_modal_update_details"),
+                e = t.querySelector("#user_blocked_form"),
+                n = new bootstrap.Modal(t);
+            return {
+                init: function () {
+                    (() => {
+                        var o = FormValidation.formValidation(e, {
+                            fields: {
+                                Note: {
+                                    validators: {
+                                        notEmpty: {
+                                            message: "Açıklama Alani Zorunludur"
+                                        }
+                                    }
+                                },
+
+                            },
+                            plugins: {
+                                trigger: new FormValidation.plugins.Trigger,
+                                bootstrap: new FormValidation.plugins.Bootstrap5({
+                                    rowSelector: ".fv-row",
+                                    eleInvalidClass: "",
+                                    eleValidClass: ""
+                                })
+                            }
+                        });
+                        const i = t.querySelector('[data-kt-users-modal-action="submit"]');
+                        i.addEventListener("click", (t => {
+                            t.preventDefault(), o && o.validate().then((function (t) {
+                                console.log("validated!"), "Valid" == t ? (i.setAttribute("data-kt-indicator", "on"), i.disabled = !0,
+                                    setTimeout((function () {
+                                        $.ajax({
+                                            url: '@Url.Action("BlockUser", "BlockUser")',
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            cache: false,
+                                            data: new FormData(document.getElementById("user_blocked_form")),
+                                            processData: false,
+                                            contentType: false,
+                                            success: function (data) {
+                                                if (data.response == 200) {
+                                                    Swal.fire({
+                                                        text: data.message,
+                                                        icon: "success",
+                                                        buttonsStyling: !1,
+                                                        confirmButtonText: "Tamam",
+                                                        customClass: {
+                                                            confirmButton: "btn btn-primary"
+                                                        }
+                                                    }).then((function (t) {
+                                                        location.reload(true)
+                                                        t.isConfirmed && n.hide()
+                                                    }))
+                                                } else {
+                                                    Swal.fire({
+                                                        text: data.message,
+                                                        icon: "error",
+                                                        buttonsStyling: !1,
+                                                        confirmButtonText: "Tamam",
+                                                        customClass: {
+                                                            confirmButton: "btn btn-primary"
+                                                        }
+                                                    }).then((function (t) {
+                                                        location.reload(true)
+                                                        t.isConfirmed && n.hide()
+                                                    }))
+                                                }
+
+                                            },
+                                            error: function (data) {
+                                                alert(data.error)
+                                                console.log(data)
+                                                Swal.fire({
+                                                    text: data.message,
+                                                    icon: "danger",
+                                                    buttonsStyling: !1,
+                                                    confirmButtonText: "Tamam",
+                                                    customClass: {
+                                                        confirmButton: "btn btn-primary"
+                                                    }
+                                                }).then((function (t) {
+                                                    location.reload(true)
+                                                    t.isConfirmed && n.hide()
+                                                }))
+                                            }
+                                        });
+                                        i
+                                    }))) : Swal.fire({
+                                        text: "Maalesef bazi hatalar algilandi, lutfen tekrar deneyin.",
+                                        icon: "error",
+                                        buttonsStyling: !1,
+                                        confirmButtonText: "Tamam!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    })
+                            }))
+                        })), t.querySelector('[data-kt-users-modal-action="cancel"]').addEventListener("click", (t => {
+                            t.preventDefault(), Swal.fire({
+                                text: "İptal Etmek İstediginize Emin misiniz?",
+                                icon: "warning",
+                                showCancelButton: !0,
+                                buttonsStyling: !1,
+                                confirmButtonText: "Evet!",
+                                cancelButtonText: "Hayır",
+                                customClass: {
+                                    confirmButton: "btn btn-primary",
+                                    cancelButton: "btn btn-active-light"
+                                }
+                            }).then((function (t) {
+                                t.value ? (e.reset(), n.hide()) : "cancel" === t.dismiss && Swal.fire({
+                                    text: "Form İptal Edildi!.",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                })
+                            }))
+                        })), t.querySelector('[data-kt-users-modal-action="close"]').addEventListener("click", (t => {
+                            t.preventDefault(), Swal.fire({
+                                text: "İptal Etmek İstediginize Emin misinz?",
+                                icon: "warning",
+                                showCancelButton: !0,
+                                buttonsStyling: !1,
+                                confirmButtonText: "Evet!",
+                                cancelButtonText: "Hayır",
+                                customClass: {
+                                    confirmButton: "btn btn-primary",
+                                    cancelButton: "btn btn-active-light"
+                                }
+                            }).then((function (t) {
+                                t.value ? (e.reset(), n.hide()) : "cancel" === t.dismiss && Swal.fire({
+                                    text: "Form İptal Edilmedi!.",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "Tamam!",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                })
+                            }))
+                        }))
+                    })()
+                }
+            }
+        }();
+        KTUtil.onDOMContentLoaded((function () {
+            KTUsersAddUser.init()
+        }));
+    </script>
+    <script>
+        $("#kt_datatable_example_1").DataTable({
+            "scrollY": 500,
+            "scrollX": true
+        });
+    </script>
+}

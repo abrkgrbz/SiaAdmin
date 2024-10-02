@@ -13,13 +13,11 @@ namespace SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser
 {
     public class GetByGuidSiaUserHandler : IRequestHandler<GetByGuidSiaUserRequest, GetByGuidSiaUserResponse>
     {
-        private readonly IUserReadRepository _usersReadRepository;
-        private readonly ISurveyLogReadRepository _surveyLogReadRepository;
+        private readonly IUserReadRepository _usersReadRepository; 
         readonly IMapper _mapper;
-        public GetByGuidSiaUserHandler(  ISurveyLogReadRepository surveyLogReadRepository, IMapper mapper, IUserReadRepository usersReadRepository)
+        public GetByGuidSiaUserHandler(  IMapper mapper, IUserReadRepository usersReadRepository)
         {
-             
-            _surveyLogReadRepository = surveyLogReadRepository;
+              
             _mapper = mapper;
             _usersReadRepository = usersReadRepository;
         }
@@ -29,9 +27,8 @@ namespace SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser
             var user = await _usersReadRepository.GetWhere(x => x.SurveyUserGuid == request.SurveyUserGuid,false).FirstOrDefaultAsync();
             if (user==null)
                 throw new ApiException("Kullanıcı bulunamadı");
-            var surveyLogDetail = await _surveyLogReadRepository.GetWhere(x => x.SurveyUserGuid == request.SurveyUserGuid,false).ToListAsync();
-            var mappingProfile = _mapper.Map<List<GetByGuidSiaUserViewModel>>(surveyLogDetail);
-            return new GetByGuidSiaUserResponse() { data = mappingProfile };
+            var mapping = _mapper.Map<GetUserByGuidViewModel>(user);
+            return new GetByGuidSiaUserResponse() {GetUserByGuidViewModel  = mapping};
         }
     }
 }

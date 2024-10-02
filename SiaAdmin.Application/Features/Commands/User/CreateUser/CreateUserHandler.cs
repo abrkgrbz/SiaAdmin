@@ -29,6 +29,7 @@ namespace SiaAdmin.Application.Features.Commands.User.CreateUser
             {
 
                 var mapUser = _mapper.Map<SiaUser>(request);
+                mapUser.UserGUID=Guid.NewGuid();
                 var response = await _userService.CreateUser(mapUser);
                 return new CreateUserResponse()
                 {

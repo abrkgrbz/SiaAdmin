@@ -19,7 +19,7 @@ var KTDatatablesServerSide = function () {
             info: false,
             responsive: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/2.0.1/i18n/tr.json',
+                url: '/assets/customjs/turkish.json',
             },
 
             columns: [
@@ -60,8 +60,7 @@ var KTDatatablesServerSide = function () {
                     data: null,
                     orderable: false,
                     className: 'text-end',
-                    render: function (data, type, row) {
-
+                    render: function (data, type, row) { 
                         return `
                             <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
                                 Seçenekler
@@ -76,15 +75,23 @@ var KTDatatablesServerSide = function () {
                             </a> 
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4" data-kt-menu="true"> 
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
+                                    <a href="#"  class="menu-link px-3" data-kt-docs-table-filter="edit_row">
                                         Güncelle
                                     </a>
-                                </div> 
+                                </div>
+                              
                                  
-                                <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3" data-kt-docs-table-filter="delete_row">
-                                        Kapat
-                                    </a>
+                                <div class="menu-item px-3"> 
+                                    ${(() => {
+                                if (row.surveyActive == 1) {
+                                    return `  <a href="#" onclick="CloseProject(${row.id})" class="menu-link px-3" data-kt-docs-table-filter="delete_row">
+                                           Kapat
+                                       </a>`;
+                                }
+                                else {
+                                    return ``;
+                                }
+                            })()}
                                 </div>
                                 <div class="menu-item px-3">
                                     <a href="#" onclick="showCountAssigned(${row.id})" class="menu-link px-3" data-kt-docs-table-filter="delete_row">
@@ -162,7 +169,48 @@ KTUtil.onDOMContentLoaded(function () {
     KTDatatablesServerSide.init();
 });
 
-
+function CloseProject(id) {
+    Swal.fire({
+        html: `Proje Kodu <strong>${id} olan</strong> projeyi kapatmak istediğinize eminmisiniz? `,
+        icon: "info",
+        buttonsStyling: false,
+        showCancelButton: true,
+        confirmButtonText: "Evet",
+        cancelButtonText: 'İptal',
+        customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: 'btn btn-danger'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = new FormData();
+            formData.append("SurveyId", id);
+            $.ajax({
+                type: 'POST',
+                url: 'proje-kapat',
+                dataType: 'json',
+                cache: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data)
+                    if (data.data==true) {
+                        Swal.fire(data.message, "", "success").then((result) => { setTimeout(() => { location.reload(true) }, 1000) });
+                        
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 403) {
+                        Swal.fire("Bu işlemi yapmak için yetkiniz bulunmamaktadır!", "", "error");
+                    }
+                }
+            });
+        } else if (!result.isConfirmed) {
+            Swal.fire("Proje kapatma işleminden vazgeçildi!", "", "warning");
+        }
+    });;
+}
 function showCountAssigned(id) {
     toastr.options = {
         "closeButton": true,
@@ -191,9 +239,9 @@ function showCountAssigned(id) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function (data) {  
+        success: function (data) {
             toastr.info(`Bu Projeye Toplamda : ${data.count} adet atama yapılmıştır`, "Atanmış Anket Sayısı");
-    },
+        },
         error: function (data) {
             alert(data)
         }

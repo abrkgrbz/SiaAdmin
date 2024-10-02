@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssigned;
@@ -27,6 +28,7 @@ namespace SiaAdmin.WebUI.Controllers
         [HttpPost("proje-atama-listesi/proje-ata")]
         public async Task<IActionResult> SurveyAssignedAdd(CreateSurveyAssignedRequest createSurveyAssignedRequest)
         {
+            createSurveyAssignedRequest.userId = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
             var response =await Mediator.Send(createSurveyAssignedRequest);
             return Ok(response);
         }

@@ -3,18 +3,21 @@
     var table;
     var dt;
     var filterPayment;
-
-    // Private functions
+     
     var initDatatable = function () {
         dt = $("#kt_table_users").DataTable({
             ajax: {
                 url: "bekleyen-proje-listesi/LoadTable",
                 type: "POST"
             },
+            language: {
+                url: '/assets/customjs/turkish.json',
+
+            },
             searchDelay: 500,
             processing: true,
             serverSide: true,
-            order: [[2, "desc"]],
+            order: [[0, "desc"]],
             stateSave: true, 
             columns: [
 

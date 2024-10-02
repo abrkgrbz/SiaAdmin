@@ -37,7 +37,7 @@ var KTSigninGeneral = function () {
 
                                 setTimeout(function () {
                                     $.ajax({
-                                        url: '/User/SiaLogin',
+                                        url: '/User/Login',
                                         type: 'POST',
                                         dataType: 'json',
                                         cache: false,
@@ -58,7 +58,7 @@ var KTSigninGeneral = function () {
                                                     }).then((function (e) {
                                                         if (e.isConfirmed) {
 
-                                                            window.location.href = '/';
+                                                            window.location.href = '/adm';
                                                             t.querySelector('[name="email"]').value = "", t.querySelector('[name="password"]').value = "";
                                                             var i =
                                                                 t.getAttribute("data-kt-redirect-url");

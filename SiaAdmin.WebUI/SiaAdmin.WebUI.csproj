@@ -6,8 +6,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+<ItemGroup>
+  <Content Update="Views\**\*.cshtml">
+    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+  </Content>
+</ItemGroup>
+
   <ItemGroup>
+    <Content Remove="wwwroot\js\point\UploadPointFile.js" />
     <Content Remove="wwwroot\js\user\Register.js" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\point\UploadPointFile.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,13 +46,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Data\" />
-    <Folder Include="Models\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\point\UploadPointFile.js" />
     <None Include="wwwroot\js\user\Register.js" />
   </ItemGroup>
 

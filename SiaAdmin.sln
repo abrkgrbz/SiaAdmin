@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.Persistence", "Sia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.API", "SiaAdmin.API\SiaAdmin.API.csproj", "{D9CA6466-D5A6-47A5-B680-D24568D7A8E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiaAdmin.WebUI", "SiaAdmin.WebUI\SiaAdmin.WebUI.csproj", "{576B6145-22C7-411F-8880-483D8126F372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiaAdmin.WebUI", "SiaAdmin.WebUI\SiaAdmin.WebUI.csproj", "{576B6145-22C7-411F-8880-483D8126F372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

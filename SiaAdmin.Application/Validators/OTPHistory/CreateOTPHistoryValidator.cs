@@ -11,7 +11,7 @@ using SiaAdmin.Application.Repositories.OTPHistory;
 
 namespace SiaAdmin.Application.Validators.OTPHistory
 {
-    public class CreateOTPHistoryValidator:AbstractValidator<CreateOTPHistoryRequest>
+    public class CreateOTPHistoryValidator : AbstractValidator<CreateOTPHistoryRequest>
     {
         private IBlockListReadRepository _blockListReadRepository;
         private IOTPHistoryReadRepository _OTPHistoryReadRepository;
@@ -19,7 +19,7 @@ namespace SiaAdmin.Application.Validators.OTPHistory
         {
             _blockListReadRepository = blockListReadRepository;
             _OTPHistoryReadRepository = otpHistoryReadRepository;
-
+            ClassLevelCascadeMode = CascadeMode.Stop;
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty()
                 .NotNull()
@@ -39,38 +39,52 @@ namespace SiaAdmin.Application.Validators.OTPHistory
                 .Must(IsPhoneNumber)
                 .WithMessage("Lütfen geçerli bir telefon numarası giriniz");
 
-
             RuleFor(x => x.IpAdress)
-                .Must(IsBlockedByIP)
-                .WithMessage("Bu adresten sisteme giriş yapılamadı. Lütfen daha sonra tekrar deneyiniz.(4)");
+                .Must(IsValidateIP)
+                .WithMessage("Lütfen geçerli bir IP adresi giriniz");
 
+            When(x => IsPhoneNumber(x.PhoneNumber), () =>
+            {
+                RuleFor(x => x.PhoneNumber)
+                    .Must(IsBlockedByPhoneNumber)
+                    .WithMessage("Bu numara ile sisteme giriş yapılamadı.(3)");
 
-            RuleFor(x => x.PhoneNumber)
-                .Must(IsBlockedByPhoneNumber)
-                .WithMessage("Bu numara ile sisteme giriş yapılamadı.(3)");
+                RuleFor(x => x.PhoneNumber)
+                    .Must(CheckByPhoneNumberEligibility)
+                    .WithMessage(
+                        "Bir gün içinde yapılabilecek işlem sayısı aşıldı. Lütfen daha sonra tekrar deneyiniz.");
+            });
 
+            When(x => IsValidateIP(x.IpAdress), () =>
+            {
+                RuleFor(x => x.IpAdress)
+                    .Must(IsBlockedByIP)
+                    .WithMessage("Bu adresten sisteme giriş yapılamadı. Lütfen daha sonra tekrar deneyiniz.(4)");
+                RuleFor(x => x.IpAdress)
+                    .Must(CheckByIpEligibility)
+                    .WithMessage(
+                        "Bir gün içinde yapılabilecek işlem sayısı aşıldı. Lütfen daha sonra tekrar deneyiniz.(2)");
 
-            RuleFor(x => x.IpAdress)
-                .Must(CheckByIpEligibility)
-                .WithMessage("Bir gün içinde yapılabilecek işlem sayısı aşıldı. Lütfen daha sonra tekrar deneyiniz.(2)");
-
-            RuleFor(x => x.PhoneNumber)
-                .Must(CheckByPhoneNumberEligibility)
-                .WithMessage("Bir gün içinde yapılabilecek işlem sayısı aşıldı. Lütfen daha sonra tekrar deneyiniz.");
+            }); 
         }
 
-        
+
 
         private bool IsPhoneNumber(string arg)
         {
             Regex regex = new Regex(@"^[0-9]{10}$");
             return regex.IsMatch(arg);
         }
-
+        private bool IsValidateIP(string arg)
+        {
+            string Pattern = @"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
+            Regex check = new Regex(Pattern);
+            return check.IsMatch(arg, 0);
+        }
         private bool IsBlockedByIP(string ip)
         {
-            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 2 &&x.Data == ip).ToList().Count;
-            if (checkBlockedUserByIP>0)
+            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 1 && x.Data == ip,false).ToList().Count;
+            if (checkBlockedUserByIP > 0)
             {
                 return false;
             }
@@ -79,7 +93,7 @@ namespace SiaAdmin.Application.Validators.OTPHistory
 
         private bool IsBlockedByPhoneNumber(string phoneNumber)
         {
-            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 1 && x.Data == phoneNumber ).ToList().Count;
+            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 2 && x.Data == phoneNumber,false).ToList().Count;
             if (checkBlockedUserByIP > 0)
             {
                 return false;
@@ -89,7 +103,7 @@ namespace SiaAdmin.Application.Validators.OTPHistory
 
         private bool CheckByIpEligibility(string ip)
         {
-            var checkIP = _OTPHistoryReadRepository.GetWhere(x => x.LastIp == ip && x.Timestamp.Date>=DateTime.Now.Date).ToList().Count;
+            var checkIP = _OTPHistoryReadRepository.GetWhere(x => x.LastIp == ip && x.Timestamp.Date.AddDays(1)>= DateTime.Now.Date,false).ToList().Count;
             if (checkIP < 15)
             {
                 return true;
@@ -100,8 +114,8 @@ namespace SiaAdmin.Application.Validators.OTPHistory
 
         private bool CheckByPhoneNumberEligibility(string phoneNumber)
         {
-            var checkIP = _OTPHistoryReadRepository.GetWhere(x => x.Msisdn == phoneNumber && x.Timestamp.Date >= DateTime.Now.Date).ToList().Count;
-            if (checkIP < 5)
+            var checkPhoneNumber = _OTPHistoryReadRepository.GetWhere(x => x.Msisdn == phoneNumber && x.Timestamp.Date.AddDays(1) >= DateTime.Now.Date,false).ToList().Count;
+            if (checkPhoneNumber < 5)
             {
                 return true;
             }

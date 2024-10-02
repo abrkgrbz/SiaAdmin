@@ -5,13 +5,14 @@ using SiaAdmin.Application.Validators.Survey;
 using SiaAdmin.Infrastructure;
 using SiaAdmin.Infrastructure.Filters;
 using SiaAdmin.Persistence;
-using SiaAdmin.WebUI.Extensions;
+using SiaAdmin.WebUI.Extensions; 
 using SiaAdmin.WebUI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options => { options.Filters.Add<ValidationFilter>(); })
+builder.Services.AddControllersWithViews(options => { options.Filters.Add<ValidationFilter>();
+    })
     .AddFluentValidation(configuration =>
         configuration.RegisterValidatorsFromAssemblyContaining<CreateSurveyValidator>())
     .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true).AddRazorRuntimeCompilation();
@@ -19,6 +20,11 @@ builder.Services.AddPersistenceServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddControllers();
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()));
+
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -31,7 +37,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     options.SlidingExpiration = true;
     options.LoginPath = "/User/Login";
-    options.AccessDeniedPath = "/User/AccessDenied";
+    options.AccessDeniedPath = "/yetkisiz-sayfa";
 });
 
 var app = builder.Build();

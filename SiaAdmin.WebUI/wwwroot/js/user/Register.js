@@ -73,7 +73,7 @@
 
                         setTimeout(function () {
                             $.ajax({
-                                url: '/User/SiaRegister',
+                                url: 'User/SiaRegister',
                                 type: "POST",
                                 dataType: "json",
                                 cache: false,
@@ -96,7 +96,7 @@
                                                     confirmButton: "btn btn-primary",
                                                 },
                                             }).then(function (t) {
-                                                window.location.href = '/User/SiaLogin'
+                                                window.location.href = '/User/Login'
                                             });
                                     } else {
                                         console.log(data)

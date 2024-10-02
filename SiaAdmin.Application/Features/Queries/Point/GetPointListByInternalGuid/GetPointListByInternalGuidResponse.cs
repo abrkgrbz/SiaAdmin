@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 namespace SiaAdmin.Application.Features.Queries.Point.GetPointListByInternalGuid
 {
     public class GetPointListByInternalGuidResponse
-    {
-        public List<GetPointListViewModel> GetPointListViewModels { get; set; }
-
+    { 
+        public int TotalPoint { get; set; }
         public int ResponseCode { get; set; }
     }
 }

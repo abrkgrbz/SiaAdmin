@@ -12,6 +12,7 @@ namespace SiaAdmin.Application.Validators.BlockList
     {
         public CreateBlockListValidator()
         {
+            ClassLevelCascadeMode = CascadeMode.Stop;
             RuleFor(x => x.Note)
                 .NotEmpty()
                 .NotNull()

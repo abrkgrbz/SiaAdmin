@@ -10,5 +10,7 @@ namespace SiaAdmin.Application.Repositories
     public interface ISurveyLogWriteRepository:IWriteRepository<SurveyLog>
     {
         Task<bool> AddOrUpdateAsync(List<SurveyLog> list);
+
+        Task<int> CreateSurveyLogByUserIncentive(int incentiveId,Guid internalGuid);
     }
 }

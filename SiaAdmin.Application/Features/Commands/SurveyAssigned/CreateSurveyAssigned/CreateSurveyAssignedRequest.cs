@@ -15,5 +15,7 @@ namespace SiaAdmin.Application.Features.Commands.SurveyAssigned.CreateSurveyAssi
         public DateTime? SurveyStartDate { get; set; }
         public int SurveyPoints { get; set; }
         public IFormFile ExcelFile { get; set; }
+
+        public string userId { get; set; }
     }
 }

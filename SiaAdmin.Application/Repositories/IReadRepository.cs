@@ -17,7 +17,9 @@ namespace SiaAdmin.Application.Repositories
         Task<T> GetByIdAsync(int id, bool tracking = true);
         Task<int> GetCount(bool tracking = true);
         Task<IQueryable<T>> OrderByField<T>(IQueryable<T> q, string sortField, bool ascending);
-     
+        Task<List<T>> GetSqlListAsync(string query);
+        IQueryable<T> GetSql(string query);
+
 
     }
 }

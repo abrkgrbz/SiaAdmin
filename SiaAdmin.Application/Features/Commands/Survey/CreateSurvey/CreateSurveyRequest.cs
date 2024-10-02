@@ -27,5 +27,6 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
         [Required]
         public string DPPass { get; set; }
         public string? DPUser { get; set; }
+        public string UserId { get; set; }
     }
 }

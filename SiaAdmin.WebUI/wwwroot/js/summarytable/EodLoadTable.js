@@ -18,7 +18,9 @@ var KTDatatablesServerSide = function () {
             serverSide: true,
             order: [[6, "desc"]],
             stateSave: true,
-
+            language: {
+                url: '/assets/customjs/turkish.json',
+            },
 
             columns: [
                 { data: "surveyUserGuid", name: "SurveyUserGuid" },

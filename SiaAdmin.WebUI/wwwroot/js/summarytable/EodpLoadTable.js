@@ -18,7 +18,9 @@
             serverSide: true,
             order: [[10, "desc"]],
             stateSave: true,
-
+            language: {
+                url: '/assets/customjs/turkish.json',
+            },
 
             columns: [
 

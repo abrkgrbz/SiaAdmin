@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SiaAdmin.Application.Features.Queries.BlockList.GetBlockedListDataTable;
+using SiaAdmin.Application.Features.Queries.User.GetUserProfile;
 
 namespace SiaAdmin.WebUI.Controllers
 {
@@ -8,8 +9,9 @@ namespace SiaAdmin.WebUI.Controllers
     public class BlockedUserController : BaseController
     {
         [HttpGet("blocklu-kullanici-listesi")]
-        public IActionResult BlockedList()
+        public async Task<IActionResult> BlockedList(string userGuid)
         {
+           
             return View();
         }
 
@@ -29,5 +31,15 @@ namespace SiaAdmin.WebUI.Controllers
         {
             return View();
         }
+
+        [HttpPost("kullanici-blockla")]
+        public async Task<IActionResult> BlockUser()
+        {
+            return Ok();
+
+        }
+
+         
+         
     }
 }

@@ -45,7 +45,7 @@ namespace SiaAdmin.Application.Features.Commands.SurveyLog.CreateSurveyLog
 
             }
             await _surveyLogWriteRepository.AddOrUpdateAsync(list);
-            await _surveyLogWriteRepository.SaveAsync();
+            await _surveyLogWriteRepository.SaveAsync(request.UserId,true);
             return new CreateSurveyLogResponse() { Message = "Puan Ekleme İşlemi Başarıyla Gerçekleştirildi", Succeeded = true };
         }
     }

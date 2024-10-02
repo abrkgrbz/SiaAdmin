@@ -12,7 +12,7 @@
         <div class="card-px text-center pt-15 pb-15"> 
             <h2 class="fs-2x fw-bolder mb-0 text-uppercase text-success" >Puan Yükleme Noktası</h2>
        
-            <form id="point_add_form" class="form" action="#" enctype="multipart/form-data">
+            @* <form id="point_add_form" class="form" action="#" enctype="multipart/form-data">
                 <div class="fv-row mb-10">
                     <input type="file" class="form-control mb-2 mt-2" name="excel_file" id="customFile">
                 </div>
@@ -24,13 +24,55 @@
                         Lütfen Bekleyiniz... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                     </span>
                 </button>
-                <a href="@Url.Action("FileDownload","Excel",new{type="Point"})" type="button" class="btn btn-success er fs-6 px-8 py-4 mt-4">
-                    <span class="indicator-label">
-                        Şablon İndir
-                    </span>
+              
+            </form>  *@
+            <div class="rounded border p-10"> 
+                <form class="form" action="#" method="post"> 
+                    <div class="form-group row"> 
+                        <label class="col-lg-2 col-form-label text-lg-right  ">Puan Dosyası Yükle:</label> 
+                        <div class="col-lg-10"> 
+                            <div class="dropzone dropzone-queue mb-2" id="point_upload">
+                                <div class="dropzone-panel mb-lg-0 mb-2">
+                                    <a class="dropzone-select btn btn-sm btn-primary me-2">Dosya Seç</a>
+                                    <a class="dropzone-upload btn btn-sm btn-light-info me-2">Yükle</a>
+                                    <a class="dropzone-remove-all btn btn-sm btn-light-danger">Sil</a>
+                                </div> 
+                                <div class="dropzone-items wm-200px">
+                                    <div class="dropzone-item" style="display:none"> 
+                                        <div class="dropzone-file">
+                                            <div class="dropzone-filename" title="some_image_file_name.jpg">
+                                                <span data-dz-name>some_image_file_name.jpg</span>
+                                                <strong>(<span data-dz-size>340kb</span>)</strong>
+                                            </div>
+
+                                            <div class="dropzone-error" data-dz-errormessage></div>
+                                        </div> 
+                                        <div class="dropzone-progress">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-primary"
+                                                     role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        <div class="dropzone-toolbar">
+                                            <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>
+                                            <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>
+                                            <span class="dropzone-delete" data-dz-remove><i class="bi bi-x fs-1"></i></span>
+                                        </div> 
+                                    </div>
+                                </div> 
+                            </div>  
+                        </div> 
+                    </div> 
+                </form> 
+
+            </div>
+            <a href="@Url.Action("FileDownload","Excel",new{type="Point"})" type="button" class="btn btn-success er fs-6 px-8 py-4 mt-4">
+                <span class="indicator-label">
+                    Şablon İndir
+                </span>
                      
-                </a>
-            </form> 
+            </a>
         </div>
           
         <div class="text-center pb-15 px-5">
@@ -38,3 +80,6 @@
         </div> 
     </div> 
 </div>
+@section js{
+    <script src="js/point/UploadPointFile.js"></script>
+}

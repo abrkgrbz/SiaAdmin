@@ -19,17 +19,24 @@ namespace SiaAdmin.Application.Features.Queries.WaitData.GetSummaryWaitData
 
         public async Task<GetSummaryWaitDataResponse> Handle(GetSummaryWaitDataRequest request, CancellationToken cancellationToken)
         {
-            var waitData = _waitDataReadRepository.GetAll(false)
-                .GroupBy(x => new { x.SurveyId, x.Tarih.Date })
-                .Select(x => new
-                {
-                    SurveyId=x.Key.SurveyId,
-                    Tarih= x.Key.Date,
-                    Adet = x.Count()
-                })
-                .OrderBy(x=>x.Tarih).ToList();
+            var waitData =await _waitDataReadRepository.GetAllWaitData();
+            var waitDataQueryable = waitData.AsQueryable();
+            int recordsFiltered = 0, recordTotal = 0;
+            if (!string.IsNullOrEmpty(request.searchValue))
+            {
+                waitDataQueryable = waitDataQueryable.Where(x => x.SurveyId.ToString().ToLower().Contains(request.searchValue.ToLower())
+                                               || x.SurveyId.ToString().Equals(request.searchValue));
+            }
 
-            return new GetSummaryWaitDataResponse() { data = waitData };
+            if (!string.IsNullOrEmpty(request.orderColumnName) && !string.IsNullOrEmpty(request.orderDir))
+            {
+                 
+                recordsFiltered = waitDataQueryable.Count();
+                recordTotal = waitDataQueryable.Count();
+
+            }
+            var waitDatas = waitDataQueryable.Skip(request.Start).Take(request.Length).ToList();
+            return new GetSummaryWaitDataResponse() { data = waitDatas.ToList(),recordTotal = recordTotal,recordsFiltered = recordsFiltered};
              
         }
     }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SiaAdmin.Application.Repositories;
@@ -33,17 +35,26 @@ namespace SiaAdmin.Persistence.Repositories
 
         public async Task<List<T>> GetProcedureListWithDateRange(string proc, DateTime? startDate, DateTime? endDate)
         {
-            string query="";
-            if (startDate==null && endDate==null)
+            SqlParameter[] @params = new SqlParameter[]
             {
-                query = "exec " + proc + " null,null";
-            }
-            else
-            {
-                query = "Exec " + proc + " " + startDate + "," + endDate;
-            }
-            
-            var list = await Table.FromSqlRaw($"{query}").ToListAsync();
+                new SqlParameter()
+                {
+                    ParameterName = "@StartDate",
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                    Direction = ParameterDirection.Input,
+                    Value = (object)startDate ?? DBNull.Value
+                },
+                new SqlParameter() {
+                    ParameterName = "@EndDate",
+                    SqlDbType =  System.Data.SqlDbType.DateTime,
+                    Direction = ParameterDirection.Input,
+                    Value = (object)endDate ?? DBNull.Value
+                }   
+            };
+            string query = "Exec " + proc + " @StartDate, @EndDate";
+           
+
+            var list = await Table.FromSqlRaw($"{query}",@params).ToListAsync();
             return list;
         }
     }

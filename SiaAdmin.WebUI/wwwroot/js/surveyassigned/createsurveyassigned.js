@@ -148,7 +148,7 @@ function ajaxPost(a, b) {
                             }))
                         } else {
                             Swal.fire({
-                                text: data.message,
+                                text: data.responseJSON.Errors,
                                 icon: "error",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Tamam",
@@ -164,7 +164,7 @@ function ajaxPost(a, b) {
                     },
                     error: function (data) { 
                         Swal.fire({
-                            text: data.message,
+                            text: data.responseJSON.Errors,
                             icon: "error",
                             buttonsStyling: !1,
                             confirmButtonText: "Tamam",
@@ -215,7 +215,7 @@ function ajaxPost(a, b) {
                             }))
                         } else {
                             Swal.fire({
-                                text: data.message,
+                                text: data.responseJSON.Errors,
                                 icon: "error",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Tamam",
@@ -232,7 +232,7 @@ function ajaxPost(a, b) {
                     error: function (data) { 
                         
                         Swal.fire({
-                            text: data.message,
+                            text: data.responseJSON.Errors,
                             icon: "error",
                             buttonsStyling: !1,
                             confirmButtonText: "Tamam",
@@ -283,7 +283,7 @@ function ajaxPost(a, b) {
                             }))
                         } else {
                             Swal.fire({
-                                text: data.message,
+                                text: data.responseJSON.Errors,
                                 icon: "error",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Tamam",
@@ -300,7 +300,7 @@ function ajaxPost(a, b) {
                     error: function (data) {
                         console.log(data)
                         Swal.fire({
-                            text: data.message,
+                            text: data.responseJSON.Errors,
                             icon: "error",
                             buttonsStyling: !1,
                             confirmButtonText: "Tamam",
@@ -341,7 +341,7 @@ function ajaxPost(a, b) {
                     }))
                 } else {
                     Swal.fire({
-                        text: data.message,
+                        text: data.responseJSON.Errors,
                         icon: "error",
                         buttonsStyling: !1,
                         confirmButtonText: "Tamam",
@@ -355,9 +355,10 @@ function ajaxPost(a, b) {
                 }
 
             },
-            error: function (data) { 
+            error: function (data) {
+               
                 Swal.fire({
-                    text: data.message,
+                    text: data.responseJSON.Errors,
                     icon: "danger",
                     buttonsStyling: !1,
                     confirmButtonText: "Tamam",

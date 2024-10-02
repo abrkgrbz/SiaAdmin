@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SiaAdmin.Application.Repositories;
 
 namespace SiaAdmin.Application.Features.Queries.SurveyAssigned.GetDuplicatedRecord
@@ -19,18 +20,12 @@ namespace SiaAdmin.Application.Features.Queries.SurveyAssigned.GetDuplicatedReco
 
         public async Task<GetDuplicatedRecordResponse> Handle(GetDuplicatedRecordRequest request, CancellationToken cancellationToken)
         {
-            var list = _surveyAssignedReadRepository.GetWhere(x => x.SurveyId == request.SurveyId, false)
-                .GroupBy(x => new { x.InternalGuid, x.SurveyId })
-                .Select(x => new DuplicatedRecordViewModel()
-                {
-                    SurveyId = x.Key.SurveyId,
-                    InternalGuid = x.Key.InternalGuid
-                }).ToList();
+            var list =await _surveyAssignedReadRepository.GetDuplicatedRecordList(request.SurveyId);
+             
             if (list.Count > 0)
             {
                 return new GetDuplicatedRecordResponse()
-                {
-                    DuplicatedRecordViewModels = list,
+                { 
                     Count = list.Count,
                     Message = "Mükerrer kayıtlar bulundu!"
                 };

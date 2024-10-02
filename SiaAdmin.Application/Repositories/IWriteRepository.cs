@@ -15,7 +15,7 @@ namespace SiaAdmin.Application.Repositories
         bool RemoveRange(List<T> datas);
         Task<bool> RemoveAsync(int id);
         bool Update(T entity);
-        Task<int> SaveAsync();
+        Task<int> SaveAsync(string userId=null,bool project=false);
     
     }
 }

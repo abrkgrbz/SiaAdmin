@@ -83,14 +83,15 @@
                                             <label class="required fw-bold fs-6 mb-2">
                                                 Proje Kod
 
-
+                                              
                                             </label>
                                             <span class="badge badge-circle badge-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Bu alana çıkılacak Projenin Kod bilgisini giriniz. Örneğin : 5460">
                                                 ?
 
                                             </span>
-
+                                           
                                             <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" name="Id" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Proje Kodu Giriniz" />
+                                            <div class="text-muted mt-2">Son Proje Kodu = <code>@ViewBag.LastSurveyId</code></div>
                                         </div>
                                         <div class="fv-row mb-7 col-6">
                                             <label class="required fw-bold fs-6 mb-2">Proje Başlık</label>
@@ -175,7 +176,7 @@
                                                   title="Bu alana Projenin  Puan bilgisini girmelisiniz. Örneğin : 500,1000">
                                                 ?
                                             </span>
-                                            <input type="text" name="SurveyPoints" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Proje Puanı Giriniz" />
+                                            <input type="text" name="SurveyPoints" class="form-control form-control-solid mb-3 mb-lg-0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Proje Puanı Giriniz" />
                                         </div>
                                         <div class="fv-row mb-7 col-6">
                                             <label class="required fw-bold fs-6 mb-2">Zorunluluk</label>
@@ -256,9 +257,11 @@
 
 
 @section js {
-    <script src="assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
-    <script src="js/survey/LoadTable.js"></script>
+    <script src="~/js/survey/CloseSurvey.js"></script>
+    <script src="~/js/survey/LoadTable.js"></script>
+ 
     <script>
         $(".datepicker").flatpickr({
             enableTime: true,
@@ -395,7 +398,8 @@
                                             processData: false,
                                             contentType: false,
                                             success: function (data) {
-                                                if (data.response == 200) {
+                                                console.log(data)
+                                                if (data.Succeeded == true) {
                                                     Swal.fire({
                                                         text: data.message,
                                                         icon: "success",

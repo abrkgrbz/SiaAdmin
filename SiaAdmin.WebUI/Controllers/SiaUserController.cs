@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetAllSiaUser;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser;
+using SiaAdmin.Application.Features.Queries.User.GetUserList;
+using SiaAdmin.WebUI.Models;
 
 namespace SiaAdmin.WebUI.Controllers
 {
@@ -26,14 +28,27 @@ namespace SiaAdmin.WebUI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("panelist-profili/{guid}")]
+        [HttpGet("panelist-profil/{guid}")]
         public async Task<IActionResult> SiaUserProfile(string guid)
         {
+            SiaUserProfileViewModel model = new();
             GetByGuidSiaUserRequest getByGuidSiaUserRequest = new GetByGuidSiaUserRequest();
             getByGuidSiaUserRequest.SurveyUserGuid=Guid.Parse(guid);
             var response =await Mediator.Send(getByGuidSiaUserRequest);
-            return View(response.data);
+            model.Active = response.GetUserByGuidViewModel.Active;
+            model.Email=response.GetUserByGuidViewModel.Email;
+            model.LastIP=response.GetUserByGuidViewModel.LastIP;
+            model.LastLogin=response.GetUserByGuidViewModel.LastLogin;
+            model.LoginCount=response.GetUserByGuidViewModel.LoginCount;
+            model.Msisdn = response.GetUserByGuidViewModel.Msisdn;
+            model.Name=response.GetUserByGuidViewModel.Name;
+            model.ProfilPuani = response.GetUserByGuidViewModel.ProfilPuani;
+            model.RegistrationDate=response.GetUserByGuidViewModel.RegistrationDate;
+            model.Surname=response.GetUserByGuidViewModel.Surname;
+            return View(model);
         }
+     
+     
 
     }
 }

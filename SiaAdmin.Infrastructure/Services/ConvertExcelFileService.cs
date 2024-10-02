@@ -62,7 +62,7 @@ namespace SiaAdmin.Infrastructure.Services
             }
             catch (Exception e)
             {
-                throw new ApiException("Beklenmedik bir hata!");
+                throw new ApiException("Lütfen GUID veya SurveyId bilgisini kontrol ediniz!");
             }
 
             return convertedData;

@@ -26,7 +26,8 @@ namespace SiaAdmin.Application.Features.Queries.SiaUser.GetAllSiaUser
 
         public async Task<GetAllSiaUserResponse> Handle(GetAllSiaUserRequest request, CancellationToken cancellationToken)
         {
-            var siaUserList = _userReadRepository.GetAll(false);
+            request.orderColumnName = "SurveyUserGuid";
+            var siaUserList = _userReadRepository.GetWhere(x=>x.Active==1,false) ; 
             int recordsFiltered = 0, recordTotal = 0;
             if (!string.IsNullOrEmpty(request.searchValue))
             {

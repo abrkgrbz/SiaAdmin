@@ -23,7 +23,7 @@ namespace SiaAdmin.Application.Features.Queries.OTPHistory.VerifyOTPHistory
         {
             
             var otp = await _otpHistoryReadRepository
-                .GetWhere(x => x.Msisdn.Equals(request.PhoneNumber) && x.Otp.Equals(request.Code)).SingleOrDefaultAsync();
+                .GetWhere(x => x.Msisdn.Equals(request.PhoneNumber) && x.Otp.Equals(request.Code)).OrderBy(x=>x.Timestamp).LastOrDefaultAsync();
             if (otp == null)
                 throw new ApiException("Telefon numarası veya OTP Kodunuz hatalı!");
 

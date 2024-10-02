@@ -29,7 +29,7 @@ namespace SiaAdmin.Domain.Entities.Models
 
         public string? Email { get; set; }
 
-        public string? Tckno { get; set; }
+        public string? TCKNo { get; set; }
 
         public string? Name { get; set; }
 
@@ -57,8 +57,8 @@ namespace SiaAdmin.Domain.Entities.Models
 
         public int ProfilPuani { get; set; }
 
-        public string? Scmtarihi { get; set; }
+        public string? SCMTarihi { get; set; }
 
-        public DateTime? Iys { get; set; }
+        public DateTime? IYS { get; set; }
     }
 }

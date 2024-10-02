@@ -18,9 +18,10 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
         {
             try
             {
+                
                 var mappingProfile = _mapper.Map<Domain.Entities.Models.Survey>(request);
                 await _surveyWriteRepository.AddAsync(mappingProfile);
-                await _surveyWriteRepository.SaveAsync();
+                await _surveyWriteRepository.SaveAsync(request.UserId,true);
                 return new() { Succeeded = true,Message = "Anket Ekleme İşlemi Başarıyla Gerçekleştirildi."};
             }
             catch (Exception e)

@@ -9,6 +9,7 @@ namespace SiaAdmin.Domain.Entities.Models
 {
     public partial class UserLog : BaseEntity
     {
+        public int Id { get; set; }
 
         public int UserId { get; set; }
 

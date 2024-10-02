@@ -22,6 +22,7 @@ namespace SiaAdmin.WebUI.Middlewares
             }
             catch (Exception error)
             {
+                List<string> message= new List<string>();
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = new Response<string>() { Succeeded = false, Message = error?.Message };
@@ -29,16 +30,21 @@ namespace SiaAdmin.WebUI.Middlewares
                 switch (error)
                 {
                     case Application.Exceptions.ApiException e:
-                        // custom application error
+                        message.Add(e.Message);
+                        responseModel.Errors= message;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case ValidationException e:
                         // custom application error
+                        message.Add(e.Message);
+                        responseModel.Errors = message;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         responseModel.Errors = e.Errors;
                         break;
                     case KeyNotFoundException e:
                         // not found error
+                        message.Add(e.Message);
+                        responseModel.Errors = message;
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     default:
