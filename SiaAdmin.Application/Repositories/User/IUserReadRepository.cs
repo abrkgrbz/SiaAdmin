@@ -10,6 +10,7 @@ namespace SiaAdmin.Application.Repositories
 {
     public interface IUserReadRepository : IReadRepository<User>
     {
+
         List<Guid> ConvertInternalGuid(List<Guid> userGuids);
         bool IfExistUser(string msisdn);
 
@@ -22,5 +23,7 @@ namespace SiaAdmin.Application.Repositories
         List<UserSurveyInfo> GetUserSurveyInfo(Guid surveyUserGUID);
         Task<List<LastSeenAdet>> GetListLastSeenAdet();
         Task<List<LastSeenSaat>> GetListLastSeenSaat();
+        IQueryable<ChurnData> GetListChurnData();
+        Task<List<ChurnData>> GetAllChurnData();
     }
 }

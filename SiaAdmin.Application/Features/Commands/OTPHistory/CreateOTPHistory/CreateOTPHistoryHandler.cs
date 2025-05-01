@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MediatR;
 using SiaAdmin.Application.Exceptions;
 using SiaAdmin.Application.Interfaces.Sms;
+using SiaAdmin.Application.Interfaces.User;
+using SiaAdmin.Application.Repositories;
 using SiaAdmin.Application.Repositories.OTPHistory;
 using SiaAdmin.Domain.Entities.Models;
 
@@ -15,13 +17,15 @@ namespace SiaAdmin.Application.Features.Commands.OTPHistory.CreateOTPHistory
     {
         private IOTPHistoryWriteRepository _otpHistoryWriteRepository;
         private IOTPHistoryReadRepository _otpHistoryReadRepository;
+        private IUserReadRepository _userReadRepository;
         private ISmsService _smsService;
 
-        public CreateOTPHistoryHandler(IOTPHistoryWriteRepository otpHistoryWriteRepository, ISmsService smsService, IOTPHistoryReadRepository otpHistoryReadRepository)
+        public CreateOTPHistoryHandler(IOTPHistoryWriteRepository otpHistoryWriteRepository, ISmsService smsService, IOTPHistoryReadRepository otpHistoryReadRepository, IUserReadRepository userReadRepository)
         {
             _otpHistoryWriteRepository = otpHistoryWriteRepository;
             _smsService = smsService;
             _otpHistoryReadRepository = otpHistoryReadRepository;
+            _userReadRepository = userReadRepository;
         }
 
 
@@ -42,13 +46,15 @@ namespace SiaAdmin.Application.Features.Commands.OTPHistory.CreateOTPHistory
             await _otpHistoryWriteRepository.SaveAsync();
             if (request.PhoneNumber.Equals("5000000000"))
             {
-                //Do Nothing
+                
             }
             else
             {
+                var user = _userReadRepository.GetWhere(x => x.Msisdn == request.PhoneNumber).FirstOrDefault();
                 string takipNo = _smsService.SendSmsOneToMany(request.PhoneNumber, randomNumber).ToString();
-                if (takipNo != null)
+                if (takipNo is not null && user is not null)
                 {
+                    string iysResult= _smsService.SendDataIYS(request.RegionCode,request.PhoneNumber,user.InternalGuid.ToString());
                     int id = insertObj.Id;
                     var updateObj = _otpHistoryReadRepository.GetWhere(x => x.Id == id).FirstOrDefault();
                     updateObj.TrackingId = takipNo;

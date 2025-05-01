@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,9 +25,36 @@ namespace SiaAdmin.Application.Features.Queries.DeviceRegistrations.GetUserDevic
 
         public async Task<Response<List<DeviceTokenList>>> Handle(GetUserDeviceTokenListRequest request, CancellationToken cancellationToken)
         {
-            var result=await _deviceRegistrationReadRepository.GetWhere(x=>x.InternalGUID== request.InternalGUID,false).ToListAsync();
-            var mapping = _mapper.Map<List<DeviceTokenList>>(result);
-            return new Response<List<DeviceTokenList>>(mapping);
+             
+            var results = new List<DeviceTokenList>(); 
+            var uniqueTokens = new HashSet<string>(); 
+            var tokenList = _deviceRegistrationReadRepository.GetDeviceIdTokensBySurveyId(request.SurveyId);
+            var tokenListWithNotInSurvey =
+                _deviceRegistrationReadRepository.GetDeviceTokensNotInSurvey(request.SurveyId);
+             
+            if (tokenList is not null)
+            {
+                foreach (var item in tokenList)
+                {
+                    if (uniqueTokens.Add(item))  
+                    {
+                        results.Add(new DeviceTokenList() { DeviceIdToken = item });
+                    }
+                }
+            }
+             
+            if (tokenListWithNotInSurvey is not null)
+            {
+                foreach (var item in tokenListWithNotInSurvey)
+                {
+                    if (uniqueTokens.Add(item))  
+                    {
+                        results.Add(new DeviceTokenList() { DeviceIdToken = item });
+                    }
+                }
+            }
+            return new Response<List<DeviceTokenList>>(results);
+
         }
     }
 }

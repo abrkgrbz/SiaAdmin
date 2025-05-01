@@ -12,7 +12,7 @@ using SiaAdmin.Persistence.Contexts;
 
 namespace SiaAdmin.Persistence.Repositories
 {
-    public class StoredProcedureRepository<T> : IStoredProcedureRepository<T> where T : class,new()
+    public class StoredProcedureRepository<T> : IStoredProcedureRepository<T> where T : class, new()
     {
         private readonly SiaAdminDbContext _context;
         public DbSet<T> Table => _context.Set<T>();
@@ -21,17 +21,35 @@ namespace SiaAdmin.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<T> GetProcedure(string proc)
+        public async Task<IEnumerable<T>> ExecuteStoredProcedureAsync(string procedureName, params SqlParameter[] parameters)
         {
-            var query = await Table.FromSqlRaw($"Exec {proc }").SingleOrDefaultAsync();
-            return query;
+
+            return await _context.Set<T>().FromSqlRaw($"EXEC {procedureName} {GetParameterString(parameters)}",parameters).ToListAsync();
         }
 
-        public async Task<List<T>> GetProcedureList(string proc)
+        public async Task<IEnumerable<TResult>> ExecuteStoredProcedureAsync<TResult>(string procedureName, params SqlParameter[] parameters) where TResult : class, new()
         {
-            var query = await Table.FromSqlRaw($"Exec {proc}").AsNoTracking().ToListAsync();
-            return query;
+            return await _context.Set<TResult>().FromSqlRaw($"EXEC {procedureName} {GetParameterString(parameters)}", parameters).ToListAsync();
         }
+
+        public async Task<int> ExecuteStoredProcedureNonQueryAsync(string procedureName, params SqlParameter[] parameters)
+        {
+            return await _context.Database.ExecuteSqlRawAsync($"EXEC {procedureName} {GetParameterString(parameters)}");
+        }
+
+        public async Task<T> ExecuteStoredProcedureScalarAsync(string procedureName, params SqlParameter[] parameters)
+        {
+            return await Table.FromSqlRaw($"EXEC {procedureName} {GetParameterString(parameters)}", parameters).FirstOrDefaultAsync();
+        }
+
+        private string GetParameterString(SqlParameter[] parameters)
+        {
+            if (parameters == null || !parameters.Any())
+                return string.Empty;
+            return string.Join(", ", parameters.Select(p =>
+                p.ParameterName.StartsWith("@") ? p.ParameterName : $"@{p.ParameterName}"));
+        }
+
 
         public async Task<List<T>> GetProcedureListWithDateRange(string proc, DateTime? startDate, DateTime? endDate)
         {
@@ -49,12 +67,12 @@ namespace SiaAdmin.Persistence.Repositories
                     SqlDbType =  System.Data.SqlDbType.DateTime,
                     Direction = ParameterDirection.Input,
                     Value = (object)endDate ?? DBNull.Value
-                }   
+                }
             };
             string query = "Exec " + proc + " @StartDate, @EndDate";
-           
 
-            var list = await Table.FromSqlRaw($"{query}",@params).ToListAsync();
+
+            var list = await Table.FromSqlRaw($"{query}", @params).ToListAsync();
             return list;
         }
     }

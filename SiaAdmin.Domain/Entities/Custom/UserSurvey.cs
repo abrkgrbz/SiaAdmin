@@ -22,7 +22,7 @@ namespace SiaAdmin.Domain.Entities.Custom
         public string? SurveyRedirect { get; set; }
         public int SurveyPoints { get; set; }
         public int? Mandatory { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime? TimeStamp { get; set; }
      
     }
 }

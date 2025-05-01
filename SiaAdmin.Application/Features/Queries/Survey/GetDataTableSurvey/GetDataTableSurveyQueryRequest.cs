@@ -4,9 +4,9 @@ namespace SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey
 {
     public class GetDataTableSurveyQueryRequest:IRequest<GetDataTableSurveyQueryResponse>
     {
-         
+
         public int draw { get; set; }
-   
+
         public int Length { get; set; }
         public int Start { get; set; }
 

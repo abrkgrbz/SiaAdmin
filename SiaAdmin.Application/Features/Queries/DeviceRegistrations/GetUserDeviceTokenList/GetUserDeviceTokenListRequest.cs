@@ -10,6 +10,6 @@ namespace SiaAdmin.Application.Features.Queries.DeviceRegistrations.GetUserDevic
 {
     public class GetUserDeviceTokenListRequest:IRequest<Response<List<DeviceTokenList>>>
     {
-        public Guid InternalGUID { get; set; }
+        public int SurveyId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -24,8 +25,9 @@ namespace SiaAdmin.Persistence.Repositories
         private readonly DbSet<UserRecievedGifts> _usersRecievedGifts;
         private readonly DbSet<UserTransactionLogs> _usersTransactionLogs;
         private readonly DbSet<LastSeenAdet> _lastSeenAdets;
-        private readonly DbSet<LastSeenSaat> _lastSeenSaat;
+        private readonly DbSet<LastSeenSaat> _lastSeenSaat; 
         private readonly DbSet<UserSurveyInfo> _usersSurveyInfo;
+        private readonly DbSet<ChurnData> _churnData;
         public UserReadRepository(SiaAdminDbContext context) : base(context)
         {
 
@@ -39,28 +41,33 @@ namespace SiaAdmin.Persistence.Repositories
             _userProfiles = context.Set<UserProfile>();
             _lastSeenAdets = context.Set<LastSeenAdet>();
             _lastSeenSaat = context.Set<LastSeenSaat>();
+            _churnData=context.Set<ChurnData>();
         }
 
 
         public List<Guid> ConvertInternalGuid(List<Guid> userGuids)
-        {
-
-            List<Guid> convertedInternalGuids = new List<Guid>();
+        { 
             try
             {
-                foreach (var item in userGuids)
-                {
+                var userDictionary = _users.ToDictionary(x => x.SurveyUserGuid, x => x.InternalGuid);
+                var convertedInternalGuids = new ConcurrentBag<Guid>();
 
-                    var internalGuid = _users.FirstOrDefault(x => x.SurveyUserGuid == item).InternalGuid;
-                    convertedInternalGuids.Add(internalGuid);
-                }
+                Parallel.ForEach(userGuids, item =>
+                {
+                    if (userDictionary.TryGetValue(item, out var internalGuid))
+                    {
+                        convertedInternalGuids.Add(internalGuid);
+                    }
+                });
+
+                return convertedInternalGuids.ToList();
             }
             catch (Exception e)
             {
                 throw new ApiException("Hatalı GUID'lar mevcut");
             }
 
-            return convertedInternalGuids;
+       
         }
 
         public bool IfExistUser(string msisdn)
@@ -84,10 +91,16 @@ namespace SiaAdmin.Persistence.Repositories
 
             var parameter = new SqlParameter("@myGUID", SqlDbType.UniqueIdentifier);
             parameter.Value = surveyUserGUID;
-            //string sql =
-            //    "SET NOCOUNT ON\r\nDECLARE @Liste TABLE\r\n(\r\n                [SurveyUserGUID] [uniqueidentifier] NOT NULL,\r\n                [SurveyId] [int] NOT NULL,\r\n                [SurveyText] [nvarchar](max) NULL,\r\n                [SurveyDescription] [nvarchar](max) NULL,\r\n                [SurveyLink] [nvarchar](max) NULL, [SurveyLinkText] [nvarchar](max) NULL,\r\n                [SurveyValidity] [datetime] NULL,\r\n                [SurveyActive] [int] NULL, [SurveyStartDate] [datetime] NULL,\r\n                [SurveyRedirect] [nvarchar](max) NULL,\r\n                [SurveyPoints] [int] NULL, [Mandatory] [int] NULL\r\n)\r\n\r\ndeclare @kayitsayisi as int = 0;\r\n \r\n\r\ninsert into @Liste\r\nselect * from\r\n( \r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 1) AND \r\n(Surveys.SurveyActive = 1) AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n \r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 0) AND \r\n(Surveys.SurveyActive = 1) AND Surveys.SurveyId < 5000 AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n/*Burası da assigned olanları veriyor*/\r\nSELECT Users.SurveyUserGUID, SurveysAssigned.SurveyId, SurveysAssigned.SurveyText, SurveysAssigned.SurveyDescription, SurveysAssigned.SurveyLink, SurveysAssigned.SurveyLinkText, SurveysAssigned.SurveyValidity, \r\nSurveysAssigned.SurveyActive, SurveysAssigned.SurveyStartDate, SurveysAssigned.SurveyRedirect, SurveysAssigned.SurveyPoints, 0 as Mandatory\r\nFROM\r\nSurveysAssigned LEFT OUTER JOIN\r\nUsers ON SurveysAssigned.InternalGUID = Users.InternalGUID\r\nWHERE (Users.InternalGUID = @myGUID)\r\nAND\r\n(\r\n(SurveysAssigned.SurveyActive = 1) AND ((SurveysAssigned.SurveyStartDate IS NULL) OR (SurveysAssigned.SurveyStartDate <= GETDATE())) AND ((SurveysAssigned.SurveyValidity IS NULL) OR (SurveysAssigned.SurveyValidity >= GETDATE()))\r\n)\r\n) as AllMySurveys\r\nwhere SurveyId NOT IN\r\n(\r\nSELECT [SurveyId] FROM [SiaLive].[dbo].[SurveyLog]\r\nLEFT OUTER JOIN\r\nUsers ON SurveyLog.SurveyUserGUID = Users.SurveyUserGUID\r\nwhere [InternalGUID] = @myGUID and SurveyLog.Active IN (1,-1,2)\r\n)\r\norder by SurveyValidity DESC, SurveyPoints DESC \r\n\r\nselect @kayitsayisi=count(*) from @Liste where SurveyId < 5000 and Mandatory = 1\r\n\r\nIF (@kayitsayisi = 0)\r\nBEGIN\r\n                select * from @Liste;\r\nEND\r\nELSE\r\nBEGIN\r\n                select * from @Liste where SurveyId < 5000 order by Mandatory Desc;\r\nEND";
-            string sql =
-                "SET NOCOUNT ON\r\nDECLARE @Liste TABLE\r\n(\r\n       [SurveyUserGUID] [uniqueidentifier] NOT NULL,\r\n       [SurveyId] [int] NOT NULL,\r\n       [SurveyText] [nvarchar](max) NULL,\r\n       [SurveyDescription] [nvarchar](max) NULL,\r\n       [SurveyLink] [nvarchar](max) NULL,\r\n       [SurveyLinkText] [nvarchar](max) NULL,\r\n       [SurveyValidity] [datetime] NULL,\r\n       [SurveyActive] [int] NULL,\r\n       [SurveyStartDate] [datetime] NULL,\r\n       [SurveyRedirect] [nvarchar](max) NULL,\r\n       [SurveyPoints] [int] NULL,\r\n       [Mandatory] [int] NULL,\r\n\t   [TimeStamp] [datetime] NOT NULL\r\n)\r\n\r\ndeclare @kayitsayisi as int = 0; \r\n \r\n\r\ninsert into @Liste\r\nselect * from\r\n(\r\n/*Bu zorunlu anketleri veriyor*/\r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory,Surveys.Timestamp\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 1) AND \r\n(Surveys.SurveyActive = 1) AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n/*Bu zorunsuz zorunlu anketleri veriyor :)*/\r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory,Surveys.Timestamp\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 0) AND \r\n(Surveys.SurveyActive = 1) AND Surveys.SurveyId < 5000 AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n/*Burası da assigned olanları veriyor*/\r\nSELECT Users.SurveyUserGUID, SurveysAssigned.SurveyId, SurveysAssigned.SurveyText, SurveysAssigned.SurveyDescription, SurveysAssigned.SurveyLink, SurveysAssigned.SurveyLinkText, SurveysAssigned.SurveyValidity, \r\nSurveysAssigned.SurveyActive, SurveysAssigned.SurveyStartDate, SurveysAssigned.SurveyRedirect, SurveysAssigned.SurveyPoints, 0 as Mandatory,SurveysAssigned.Timestamp\r\nFROM\r\nSurveysAssigned LEFT OUTER JOIN\r\nUsers ON SurveysAssigned.InternalGUID = Users.InternalGUID\r\nWHERE (Users.InternalGUID = @myGUID)\r\nAND\r\n(\r\n(SurveysAssigned.SurveyActive = 1) AND ((SurveysAssigned.SurveyStartDate IS NULL) OR (SurveysAssigned.SurveyStartDate <= GETDATE())) AND ((SurveysAssigned.SurveyValidity IS NULL) OR (SurveysAssigned.SurveyValidity >= GETDATE()))\r\n)\r\n) as AllMySurveys\r\nwhere SurveyId NOT IN\r\n(\r\nSELECT [SurveyId] FROM [SiaLive].[dbo].[SurveyLog]\r\nLEFT OUTER JOIN\r\nUsers ON SurveyLog.SurveyUserGUID = Users.SurveyUserGUID\r\nwhere [InternalGUID] = @myGUID and SurveyLog.Active IN (1,-1,2)\r\n)\r\norder by SurveyValidity DESC, SurveyPoints DESC\r\n\r\n--select * from @Liste;\r\n\r\nselect @kayitsayisi=count(*) from @Liste where SurveyId < 5000 and Mandatory = 1\r\n\r\nIF (@kayitsayisi = 0)\r\nBEGIN\r\n       select * from @Liste;\r\nEND\r\nELSE\r\nBEGIN\r\n       select * from @Liste where SurveyId < 5000 order by Mandatory Desc;\r\nEND\r\n";
+            string sql;
+            if (surveyUserGUID==Guid.Parse("A3A62F75-AFE3-4872-BBC9-0BBBCD2A2939"))
+            {
+                sql =
+                    "\nDECLARE @Liste TABLE (\n    [SurveyUserGUID] UNIQUEIDENTIFIER NOT NULL,\n    [SurveyId] INT NOT NULL,\n    [SurveyText] NVARCHAR(MAX) NULL,\n    [SurveyDescription] NVARCHAR(MAX) NULL,\n    [SurveyLink] NVARCHAR(MAX) NULL,\n    [SurveyLinkText] NVARCHAR(MAX) NULL,\n    [SurveyValidity] DATETIME NULL,\n    [SurveyActive] INT NULL,\n    [SurveyStartDate] DATETIME NULL,\n    [SurveyRedirect] NVARCHAR(MAX) NULL,\n    [SurveyPoints] INT NULL,\n    [Mandatory] INT NULL,\n    [TimeStamp] DATETIME NOT NULL\n);\n\nDECLARE @kayitsayisi INT = 0;\n\nINSERT INTO @Liste\nSELECT *\nFROM (\n    -- Zorunlu Anketler\n    SELECT \n        u.SurveyUserGUID, \n        s.SurveyId, \n        s.SurveyText, \n        s.SurveyDescription, \n        s.SurveyLink, \n        s.SurveyLinkText, \n        s.SurveyValidity, \n        s.SurveyActive, \n        s.SurveyStartDate, \n        s.SurveyRedirect, \n        s.SurveyPoints, \n        s.Mandatory, \n        s.Timestamp\n    FROM Surveys s\n    CROSS JOIN (SELECT SurveyUserGUID FROM Users WHERE InternalGUID = @myGUID) u\n    WHERE s.Mandatory = 1 \n        AND s.SurveyActive = 1 \n        AND (s.SurveyStartDate IS NULL OR s.SurveyStartDate <= GETDATE())\n        AND (s.SurveyValidity IS NULL OR s.SurveyValidity >= GETDATE())\n\n    UNION ALL\n\n    -- Zorunsuz Anketler\n    SELECT \n        u.SurveyUserGUID, \n        s.SurveyId, \n        s.SurveyText, \n        s.SurveyDescription, \n        s.SurveyLink, \n        s.SurveyLinkText, \n        s.SurveyValidity, \n        s.SurveyActive, \n        s.SurveyStartDate, \n        s.SurveyRedirect, \n        s.SurveyPoints, \n        s.Mandatory, \n        s.Timestamp\n    FROM Surveys s\n    CROSS JOIN (SELECT SurveyUserGUID FROM Users WHERE InternalGUID = @myGUID) u\n    WHERE s.Mandatory = 0 \n        AND s.SurveyActive = 1 \n        AND s.SurveyId < 5000 \n        AND (s.SurveyStartDate IS NULL OR s.SurveyStartDate <= GETDATE())\n        AND (s.SurveyValidity IS NULL OR s.SurveyValidity >= GETDATE())\n\n    UNION ALL\n\n    -- Atanmış Anketler\n    SELECT \n        u.SurveyUserGUID, \n        sa.SurveyId, \n        sa.SurveyText, \n        sa.SurveyDescription, \n        sa.SurveyLink, \n        sa.SurveyLinkText, \n        sa.SurveyValidity, \n        sa.SurveyActive, \n        sa.SurveyStartDate, \n        sa.SurveyRedirect, \n        sa.SurveyPoints, \n        0 AS Mandatory, \n        sa.Timestamp\n    FROM SurveysAssigned sa\n    LEFT JOIN Users u ON sa.InternalGUID = u.InternalGUID\n    WHERE u.InternalGUID = @myGUID\n        AND sa.SurveyActive = 1 \n        AND (sa.SurveyStartDate IS NULL OR sa.SurveyStartDate <= GETDATE())\n        AND (sa.SurveyValidity IS NULL OR sa.SurveyValidity >= GETDATE())\n) AS AllMySurveys\nWHERE SurveyId NOT IN (\n    SELECT sl.SurveyId \n    FROM SurveyLog sl\n    LEFT JOIN Users u ON sl.SurveyUserGUID = u.SurveyUserGUID\n    WHERE u.InternalGUID = @myGUID \n        AND sl.Active IN (1, -1, 2)\n)\nORDER BY SurveyValidity DESC, SurveyPoints DESC;\r\nSELECT @kayitsayisi = COUNT(*) FROM @Liste WHERE SurveyId > 5000  ;\r\n\r\nIF (@kayitsayisi = 0)\r\nBEGIN\r\n    SELECT * FROM @Liste;\r\nEND\r\nELSE\r\nBEGIN\r\n    SELECT * FROM @Liste WHERE SurveyId > 5000 and SurveyText='Video Test' ORDER BY Mandatory DESC;\r\nEND\r\n";
+                var testResult = _usersSurvey.FromSqlRaw(sql, parameter).ToList();
+                return testResult;
+            }
+            sql =
+               "SET NOCOUNT ON\r\nDECLARE @Liste TABLE\r\n(\r\n       [SurveyUserGUID] [uniqueidentifier] NOT NULL,\r\n       [SurveyId] [int] NOT NULL,\r\n       [SurveyText] [nvarchar](max) NULL,\r\n       [SurveyDescription] [nvarchar](max) NULL,\r\n       [SurveyLink] [nvarchar](max) NULL,\r\n       [SurveyLinkText] [nvarchar](max) NULL,\r\n       [SurveyValidity] [datetime] NULL,\r\n       [SurveyActive] [int] NULL,\r\n       [SurveyStartDate] [datetime] NULL,\r\n       [SurveyRedirect] [nvarchar](max) NULL,\r\n       [SurveyPoints] [int] NULL,\r\n       [Mandatory] [int] NULL,\r\n\t   [TimeStamp] [datetime] NOT NULL\r\n)\r\n\r\ndeclare @kayitsayisi as int = 0; \r\n \r\n\r\ninsert into @Liste\r\nselect * from\r\n(\r\n/*Bu zorunlu anketleri veriyor*/\r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory,Surveys.Timestamp\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 1) AND \r\n(Surveys.SurveyActive = 1) AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n/*Bu zorunsuz zorunlu anketleri veriyor :)*/\r\nSELECT\r\nu.SurveyUserGUID, Surveys.SurveyId, Surveys.SurveyText, Surveys.SurveyDescription, Surveys.SurveyLink, Surveys.SurveyLinkText, Surveys.SurveyValidity, Surveys.SurveyActive, Surveys.SurveyStartDate, Surveys.SurveyRedirect, \r\nSurveys.SurveyPoints,Surveys.Mandatory,Surveys.Timestamp\r\nFROM\r\nSurveys CROSS JOIN\r\n(\r\nSELECT SurveyUserGUID FROM Users WHERE (InternalGUID = @myGUID)\r\n) AS u\r\nWHERE\r\n(Surveys.Mandatory = 0) AND \r\n(Surveys.SurveyActive = 1) AND Surveys.SurveyId < 5000 AND ((Surveys.SurveyStartDate IS NULL) OR (Surveys.SurveyStartDate <= GETDATE())) AND ((Surveys.SurveyValidity IS NULL) OR (Surveys.SurveyValidity >= GETDATE()))\r\nUNION ALL\r\n/*Burası da assigned olanları veriyor*/\r\nSELECT Users.SurveyUserGUID, SurveysAssigned.SurveyId, SurveysAssigned.SurveyText, SurveysAssigned.SurveyDescription, SurveysAssigned.SurveyLink, SurveysAssigned.SurveyLinkText, SurveysAssigned.SurveyValidity, \r\nSurveysAssigned.SurveyActive, SurveysAssigned.SurveyStartDate, SurveysAssigned.SurveyRedirect, SurveysAssigned.SurveyPoints, 0 as Mandatory,SurveysAssigned.Timestamp\r\nFROM\r\nSurveysAssigned LEFT OUTER JOIN\r\nUsers ON SurveysAssigned.InternalGUID = Users.InternalGUID\r\nWHERE (Users.InternalGUID = @myGUID)\r\nAND\r\n(\r\n(SurveysAssigned.SurveyActive = 1) AND ((SurveysAssigned.SurveyStartDate IS NULL) OR (SurveysAssigned.SurveyStartDate <= GETDATE())) AND ((SurveysAssigned.SurveyValidity IS NULL) OR (SurveysAssigned.SurveyValidity >= GETDATE()))\r\n)\r\n) as AllMySurveys\r\nwhere SurveyId NOT IN\r\n(\r\nSELECT [SurveyId] FROM [SiaLive].[dbo].[SurveyLog]\r\nLEFT OUTER JOIN\r\nUsers ON SurveyLog.SurveyUserGUID = Users.SurveyUserGUID\r\nwhere [InternalGUID] = @myGUID and SurveyLog.Active IN (1,-1,2)\r\n)\r\norder by SurveyValidity DESC, SurveyPoints DESC\r\n\r\n--select * from @Liste;\r\n\r\nselect @kayitsayisi=count(*) from @Liste where SurveyId < 5000 and Mandatory = 1\r\n\r\nIF (@kayitsayisi = 0)\r\nBEGIN\r\n       select * from @Liste;\r\nEND\r\nELSE\r\nBEGIN\r\n       select * from @Liste where SurveyId < 5000 order by Mandatory Desc;\r\nEND\r\n";
             var result = _usersSurvey.FromSqlRaw(sql, parameter).AsNoTracking().ToList();
             return result;
         }
@@ -110,7 +123,7 @@ namespace SiaAdmin.Persistence.Repositories
             var parameter = new SqlParameter("@myGUID", SqlDbType.UniqueIdentifier);
             parameter.Value = surveyUserGUID;
             string sql =
-                "declare @myGOAL as integer = 0;\r\nSELECT  @myGOAL = ISNULL(sum([SurveyPoints]),0) FROM [SiaLive].[dbo].[SurveyLog] where SurveyUserGUID IN (SELECT [SurveyUserGUID] FROM [SiaLive].[dbo].[Users] where Active = 1 and [InternalGUID] = @myGUID) and  Active = 1 and Approved = 1\r\n \r\nSELECT [Id],[IncentiveText],[Points] FROM [SiaLive].[dbo].[Incentives] where [Active] = 1 and [Points]<= @myGOAL";
+                "declare @myGOAL as integer = 0;\r\nSELECT  @myGOAL = ISNULL(sum([SurveyPoints]),0) FROM [SiaLive].[dbo].[SurveyLog] where SurveyUserGUID IN (SELECT [SurveyUserGUID] FROM [SiaLive].[dbo].[Users] where Active = 1 and [InternalGUID] = @myGUID) and  Active = 1 and Approved = 1\r\n \r\nSELECT [Id],[IncentiveText],[Points] FROM [SiaLive].[dbo].[Incentives] where [Active] = 1 and [showInDisplay]=1 and [Points]<= @myGOAL";
             var result = _usersSelectIncentive.FromSqlRaw(sql, parameter).AsNoTracking().ToList();
             return result;
         }
@@ -172,6 +185,45 @@ namespace SiaAdmin.Persistence.Repositories
                 "SELECT \r\n    LastSeen, \r\n    AVG(sss) AS ProfilYasamSaatDegeri \r\nFROM \r\n(\r\n    SELECT \r\n        TOP 90 PERCENT \r\n        FORMAT(LastLogin, 'MM') AS LastSeen,\r\n        CAST(DATEDIFF(SECOND, [RegistrationDate], LastLogin) AS BIGINT) / 60 / 60 AS sss\r\n    FROM \r\n        [SiaLive].[dbo].[Users]\r\n    WHERE \r\n        Active = 0 \r\n        AND LastLogin BETWEEN '2024-01-01' AND GETDATE()\r\n    ORDER BY \r\n        CAST(DATEDIFF(SECOND, [RegistrationDate], LastLogin) AS BIGINT)\r\n) a\r\nGROUP BY \r\n    LastSeen;";
             var result = await _lastSeenSaat.FromSqlRaw(sql).ToListAsync();
             return result;
+        }
+
+        public IQueryable<ChurnData> GetListChurnData()
+        {
+            string sql = @"SELECT [InternalGUID]
+      ,[RegistrationDate]
+      ,[LastLogin]
+      ,[Msisdn]
+      ,[Email],
+      IIF ((( [Reason]) & (1) = 1), 1,0) as 'cazipdegil',
+      IIF ((( [Reason]) & (2) = 2), 1,0) as 'ilgisiz',
+      IIF ((( [Reason]) & (4) = 4), 1,0) as 'kimole',
+      IIF ((( [Reason]) & (8) = 8), 1,0) as 'korkuyorum',
+      IIF ((( [Reason]) & (16) = 16), 1,0) as 'vakitsizim',
+      IIF ((( [Reason]) & (32) = 32), 1,0) as 'dusukcene',
+      IIF ((( [Reason]) & (64) = 64), 1,0) as 'diger'
+      FROM [SiaLive].[dbo].[Users]
+      where Active = 0 and Reason is not null ";
+
+           return _churnData.FromSqlRaw(sql);
+        }
+
+        public async Task<List<ChurnData>> GetAllChurnData()
+        {
+            string sql = @"SELECT [InternalGUID]
+      ,[RegistrationDate]
+      ,[LastLogin]
+      ,[Msisdn]
+      ,[Email],
+      IIF ((( [Reason]) & (1) = 1), 1,0) as 'cazipdegil',
+      IIF ((( [Reason]) & (2) = 2), 1,0) as 'ilgisiz',
+      IIF ((( [Reason]) & (4) = 4), 1,0) as 'kimole',
+      IIF ((( [Reason]) & (8) = 8), 1,0) as 'korkuyorum',
+      IIF ((( [Reason]) & (16) = 16), 1,0) as 'vakitsizim',
+      IIF ((( [Reason]) & (32) = 32), 1,0) as 'dusukcene',
+      IIF ((( [Reason]) & (64) = 64), 1,0) as 'diger'
+      FROM [SiaLive].[dbo].[Users]
+      where Active = 0 and Reason is not null ";
+            return await _churnData.FromSqlRaw(sql).ToListAsync();
         }
     }
 }

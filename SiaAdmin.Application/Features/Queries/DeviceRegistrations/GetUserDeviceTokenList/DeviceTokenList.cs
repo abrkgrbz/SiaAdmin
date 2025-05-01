@@ -8,7 +8,6 @@ namespace SiaAdmin.Application.Features.Queries.DeviceRegistrations.GetUserDevic
 {
     public class DeviceTokenList
     {
-        public string DeviceIdToken { get; set; }
-        public DateTime Timestamp { get; set; }
+        public string DeviceIdToken { get; set; } 
     }
 }

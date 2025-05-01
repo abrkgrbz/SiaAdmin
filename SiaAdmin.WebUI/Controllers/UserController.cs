@@ -18,7 +18,7 @@ namespace SiaAdmin.WebUI.Controllers
 
     public class UserController : BaseController
     {
-       
+
         public IActionResult Login()
         {
             return View();
@@ -42,8 +42,8 @@ namespace SiaAdmin.WebUI.Controllers
             return RedirectToAction("Login", "User");
         }
 
-         
-        [HttpPost("/User/Login")] 
+
+        [HttpPost("/User/Login")]
         public async Task<IActionResult> UserLogin(GetUserRequest getUserRequest)
         {
             try
@@ -62,7 +62,7 @@ namespace SiaAdmin.WebUI.Controllers
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
-                return Json(new { response = HttpStatusCode.OK, message = "Başarıyla Giriş Yaptınız",returnRedirect=Url.Action("Index","Home") });
+                return Json(new { response = HttpStatusCode.OK, message = "Başarıyla Giriş Yaptınız", returnRedirect = Url.Action("Index", "Home") });
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace SiaAdmin.WebUI.Controllers
 
         }
 
-        [HttpPost("User/SiaRegister")] 
+        [HttpPost("User/SiaRegister")]
         public async Task<IActionResult> UserRegister(CreateUserRequest createUserRequest)
         {
 
@@ -85,8 +85,8 @@ namespace SiaAdmin.WebUI.Controllers
 
         }
 
-       
-       
+
+
 
     }
 }

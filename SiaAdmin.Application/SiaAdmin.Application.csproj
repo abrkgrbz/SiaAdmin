@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Features\Commands\BlockList\UpdateBlockList\" />
     <Folder Include="Features\Queries\Dashboard\" />
+    <Folder Include="Features\Queries\NotificationHistory\GetNotificationHistory\" />
     <Folder Include="Features\Queries\SurveyAssigned\GetDataTablesSurveyAssigned\" />
     <Folder Include="Features\Queries\Survey\GetByIdSurvey\" />
   </ItemGroup>

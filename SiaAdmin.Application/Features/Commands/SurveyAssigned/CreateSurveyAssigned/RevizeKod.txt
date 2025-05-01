@@ -1,0 +1,65 @@
+﻿
+            var excelList = _excelService.readExcel(request.ExcelFile);
+            var survey = await _surveyReadRepository.GetByIdAsync(request.SurveyId);
+            var mappingMapSurveyAssigned = _mapper.Map<DTOs.SurveyAssigned.MapSurveyAssigned>(survey);
+            if (excelList.TableName.Equals(ExcelTable.InternalGUID.ToString()))
+            {
+                var guids = _convertExcelFile.convertedInternalGuidDTO(excelList);
+
+
+                foreach (var item in guids.Guids)
+                {
+                    var isExist = await _surveyAssignedReadRepository.GetSingleAsync(x => x.InternalGuid == item && x.SurveyId == request.SurveyId, false);
+                    if (isExist != null)
+                        throw new ApiException("Mükerrer Kayıt bulunmakta");
+                    await _surveyAssignedWriteRepository.AddAsync(new Domain.Entities.Models.SurveyAssigned()
+                    {
+                        SurveyText = mappingMapSurveyAssigned.SurveyText,
+                        SurveyDescription = mappingMapSurveyAssigned.SurveyDescription,
+                        SurveyLink = mappingMapSurveyAssigned.SurveyLink,
+                        SurveyPoints = request.SurveyPoints,
+                        InternalGuid = item,
+                        SurveyId = request.SurveyId,
+                        SurveyLinkText = mappingMapSurveyAssigned.SurveyLinkText,
+                        SurveyStartDate = request.SurveyStartDate,
+                        SurveyValidity = request.SurveyValidity,
+                        Timestamp = mappingMapSurveyAssigned.Timestamp,
+                        SurveyActive = mappingMapSurveyAssigned.SurveyActive
+                    });
+               
+                }
+                await _surveyAssignedWriteRepository.SaveAsync(request.userId, true);
+
+            }
+
+            if (excelList.TableName.Equals(ExcelTable.SurveyUserGUID.ToString()))
+            {
+                var guids = _convertExcelFile.convertedUserGuidDTO(excelList);
+                var convertedGuids = _userReadRepository.ConvertInternalGuid(guids.Guids);
+                foreach (var item in convertedGuids)
+                {
+
+                    var isExist = await _surveyAssignedReadRepository.GetSingleAsync(x => x.InternalGuid == item && x.SurveyId == request.SurveyId, false);
+                    if (isExist != null)
+                        throw new ApiException("Mükerrer Kayıt bulunmakta");
+                    await _surveyAssignedWriteRepository.AddAsync(new Domain.Entities.Models.SurveyAssigned()
+                    {
+                        SurveyText = mappingMapSurveyAssigned.SurveyText,
+                        SurveyDescription = mappingMapSurveyAssigned.SurveyDescription,
+                        SurveyLink = mappingMapSurveyAssigned.SurveyLink,
+                        SurveyPoints = request.SurveyPoints,
+                        InternalGuid = item,
+                        SurveyId = request.SurveyId,
+                        SurveyLinkText = mappingMapSurveyAssigned.SurveyLinkText,
+                        SurveyStartDate = request.SurveyStartDate,
+                        SurveyValidity = request.SurveyValidity,
+                        Timestamp = mappingMapSurveyAssigned.Timestamp,
+                        SurveyActive = mappingMapSurveyAssigned.SurveyActive
+                    });
+
+
+                }
+                await _surveyAssignedWriteRepository.SaveAsync(request.userId,true);
+            }
+
+            return new CreateSurveyAssignedResponse() { Succeeded = true, Message = "Anket Atama İşlemi Başarıyla Gerçekleştirildi." };

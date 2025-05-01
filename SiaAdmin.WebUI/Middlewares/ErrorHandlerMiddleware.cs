@@ -22,7 +22,7 @@ namespace SiaAdmin.WebUI.Middlewares
             }
             catch (Exception error)
             {
-                List<string> message= new List<string>();
+                List<string> message = new List<string>();
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = new Response<string>() { Succeeded = false, Message = error?.Message };
@@ -31,7 +31,7 @@ namespace SiaAdmin.WebUI.Middlewares
                 {
                     case Application.Exceptions.ApiException e:
                         message.Add(e.Message);
-                        responseModel.Errors= message;
+                        responseModel.Errors = message;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case ValidationException e:
@@ -46,6 +46,18 @@ namespace SiaAdmin.WebUI.Middlewares
                         message.Add(e.Message);
                         responseModel.Errors = message;
                         response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
+                    case UnauthorizedAccessException e:
+                        // unauthorized access error
+                        message.Add(e.Message);
+                        responseModel.Errors = message;
+                        response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        break;
+                    case NotImplementedException e:
+                        // not implemented error
+                        message.Add(e.Message);
+                        responseModel.Errors = message;
+                        response.StatusCode = (int)HttpStatusCode.NotImplemented;
                         break;
                     default:
                         // unhandled error

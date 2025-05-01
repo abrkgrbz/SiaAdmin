@@ -1,6 +1,9 @@
 using FluentValidation.AspNetCore;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SiaAdmin.Application;
+using SiaAdmin.Application.Interfaces.NotificationProcessor;
 using SiaAdmin.Application.Validators.Survey;
 using SiaAdmin.Infrastructure;
 using SiaAdmin.Infrastructure.Filters;
@@ -49,8 +52,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+ // Her dakika kontrol et
 
- 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -65,4 +68,15 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] {new LocalRequestsOnlyAuthorizationFilter() },
+    DashboardTitle = "Reminder System Hangfire Dashboard"
+});
+RecurringJob.AddOrUpdate<INotificationProcessor>(
+    "check-pending-notifications",
+    processor => processor.ProcessPendingNotifications(),
+    Cron.Minutely());
+
+ 
 app.Run();

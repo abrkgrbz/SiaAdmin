@@ -1,7 +1,9 @@
-﻿using FirebaseAdmin.Auth;
+﻿using System.ComponentModel.DataAnnotations;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SiaAdmin.Application.DTOs.Mail;
 using SiaAdmin.Application.Features.Commands.DeviceRegistrations.CreateDeviceRegistration;
 using SiaAdmin.Application.Features.Commands.User.CreateUser;
 using SiaAdmin.Application.Features.Commands.User.DeleteUser;
@@ -22,6 +24,7 @@ using SiaAdmin.Application.Features.Queries.User.GetUserSurveyInfo;
 using SiaAdmin.Application.Features.Queries.User.GetUserSurveyPoint;
 using SiaAdmin.Application.Features.Queries.User.GetUserTransactionLogsList;
 using SiaAdmin.Application.Interfaces.Firebase.Models;
+using SiaAdmin.Application.Interfaces.Mail;
 
 namespace SiaAdmin.API.Controllers
 {
@@ -29,6 +32,13 @@ namespace SiaAdmin.API.Controllers
    
     public class UserController : BaseApiController
     {
+        private IMailService _mailService;
+
+        public UserController(IMailService mailService)
+        {
+            _mailService = mailService;
+        }
+
         [HttpPost("CreateUser")]
         [NonAction]
         public async Task<IActionResult> CreateUser([FromQuery]CreateUserRequest createUserRequest)
@@ -82,7 +92,7 @@ namespace SiaAdmin.API.Controllers
         public async Task<IActionResult> GetUserSurveyList()
         {
             string userGuid = HttpContext.Items["userGuid"]?.ToString();
-
+            
             var response = await Mediator.Send(new GetSurveyUserListRequest(){UserGUID = userGuid});
             return Ok(response);
         }
@@ -198,14 +208,14 @@ namespace SiaAdmin.API.Controllers
         /// <summary>
         /// Kullanıcın bildirim için üretilen token bilgisini geri döndürür. 
         /// </summary>
-        [HttpGet("GetDeviceTokenRegistrationList")]
-        [Authorize]
-        public async Task<IActionResult> GetDeviceTokenRegistrationList()
-        {
-            string userGuid = HttpContext.Items["userGuid"]?.ToString();
-            var response = await Mediator.Send(new GetUserDeviceTokenListRequest(){InternalGUID = Guid.Parse(userGuid)});
-            return Ok(response);
-        }
+        //[HttpGet("GetDeviceTokenRegistrationList")]
+        //[Authorize]
+        //public async Task<IActionResult> GetDeviceTokenRegistrationList()
+        //{
+        //    string userGuid = HttpContext.Items["userGuid"]?.ToString();
+        //    var response = await Mediator.Send(new GetUserDeviceTokenListRequest(){InternalGUIDs = new List<Guid>(){Guid.Parse(userGuid)}});
+        //    return Ok(response);
+        //}
 
         /// <summary>
         /// Kullanıcının iletisim tercihlerini günceller. 
@@ -251,6 +261,46 @@ namespace SiaAdmin.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("SendMessage")]
+        [Authorize]
+        public async Task<IActionResult> SendMessageByUser([FromForm]Message messageObj) 
+        {
+            try
+            {
+                string userGuid = HttpContext.Items["userGuid"]?.ToString();
+                var convertedGUID = Guid.Parse(userGuid);
+                var message = new MessageObject()
+                {
+                    Body = messageObj.Body,
+                    Subject = messageObj.Subject,
+                    UserGUID = convertedGUID
+                };
+                await _mailService.SendMessage(message);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Mesaj başarıyla gönderildi",
+                    data = new
+                    {
+                        subject = message.Subject,
+                        timestamp = DateTime.UtcNow
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Mesaj gönderilirken bir hata oluştu", error = ex.Message });
+
+            }
+        }
+        public class Message
+        {
+            [Required]
+            public string Subject { get; set; }
+            [Required]
+            public string Body { get; set; }
+        }
+
         public class UpdateReferenceCodeVM
         {
             public string ReferenceCode { get; set; }
@@ -282,5 +332,7 @@ namespace SiaAdmin.API.Controllers
             public bool IsCheckedPhone { get; set; }
             public bool IsCheckedEmail { get; set; }
         }
+
+       
     }
 }

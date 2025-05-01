@@ -25,7 +25,7 @@ namespace SiaAdmin.Application.Features.Queries.Incentive.GetAllIncentice
 
         public async Task<Response<List<IncentiveViewModel>>> Handle(GetAllIncenticeRequest request, CancellationToken cancellationToken)
         {
-            var incentiveList =await _incentiveReadRepository.GetAll(false).ToListAsync();
+            var incentiveList =await _incentiveReadRepository.GetWhere(x=>x.ShowInDisplay==1 && x.Active==1).ToListAsync();
             var mappingProfile = _mapper.Map<List<IncentiveViewModel>>(incentiveList);
             return new Response<List<IncentiveViewModel>>(mappingProfile);
           

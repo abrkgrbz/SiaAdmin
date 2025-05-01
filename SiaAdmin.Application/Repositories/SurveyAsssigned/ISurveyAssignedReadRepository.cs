@@ -10,6 +10,7 @@ namespace SiaAdmin.Application.Repositories
 {
     public interface ISurveyAssignedReadRepository:IReadRepository<SurveyAssigned>
     {
+        bool CheckDuplicatedRecordByUserGUID(int surveyId,List<Guid> userGuidList);
         bool IsDuplicatedGuid(int surveyId, Guid internalGuid);
 
         Task<List<MukerreKayit>> GetDuplicatedRecordList(int surveyId);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Core;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SiaAdmin.Application.Repositories;
 using SiaAdmin.Domain.Entities.Custom;
@@ -23,6 +24,44 @@ namespace SiaAdmin.Persistence.Repositories
             _mukerreKayit = context.Set<MukerreKayit>();
         }
 
+        public bool CheckDuplicatedRecordByUserGUID(int surveyId, List<Guid> userGuidList)
+        {
+            try
+            {
+                const int batchSize = 10000;
+                var duplicateGuids = new List<Guid>();
+
+                var batches = SplitList(userGuidList, batchSize);
+
+                foreach (var batch in batches)
+                {
+                    var batchDuplicates = _surveyAssigneds
+                        .AsNoTracking() 
+                        .Where(x => batch.Contains(x.InternalGuid) && x.SurveyId == surveyId)
+                        .GroupBy(x => x.InternalGuid)
+                        .Where(g => g.Count() >= 1)
+                        .Select(g => g.Key)
+                        .ToList();
+
+                    duplicateGuids.AddRange(batchDuplicates);
+                }
+
+                var data = duplicateGuids.ToList();
+                return duplicateGuids.Any();
+            }
+            catch (Exception e)
+            { 
+                return false;
+            }
+        }
+
+        private static IEnumerable<List<T>> SplitList<T>(List<T> list, int batchSize)
+        {
+            for (int i = 0; i < list.Count; i += batchSize)
+            {
+                yield return list.GetRange(i, Math.Min(batchSize, list.Count - i));
+            }
+        }
         public bool IsDuplicatedGuid(int surveyId, Guid internalGuid)
         {
             bool isDuplicated = _surveyAssigneds.All(x => x.InternalGuid != internalGuid && x.SurveyId != surveyId);
@@ -35,5 +74,7 @@ namespace SiaAdmin.Persistence.Repositories
             var result = await _mukerreKayit.FromSqlRaw(sql).ToListAsync();
             return result;
         }
+
+      
     }
 }

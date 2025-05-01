@@ -1,6 +1,9 @@
-﻿@{
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string userGuid = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 }
 
 @section css {
@@ -83,13 +86,13 @@
                                             <label class="required fw-bold fs-6 mb-2">
                                                 Proje Kod
 
-                                              
+
                                             </label>
                                             <span class="badge badge-circle badge-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Bu alana çıkılacak Projenin Kod bilgisini giriniz. Örneğin : 5460">
                                                 ?
 
                                             </span>
-                                           
+
                                             <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" name="Id" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Proje Kodu Giriniz" />
                                             <div class="text-muted mt-2">Son Proje Kodu = <code>@ViewBag.LastSurveyId</code></div>
                                         </div>
@@ -128,7 +131,7 @@
                                                   title="Bu alana Projenin Linke tıklanacak alanın yazısını girmelisiniz. Örneğin : tıklayınız,buraya tıklayınız">
                                                 ?
                                             </span>
-                                            <input type="text" name="SurveyLinkText" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Proje için LinkText'i Giriniz'" />
+                                            <input disabled="disabled" type="text" name="SurveyLinkText" class="form-control form-control-solid mb-3 mb-lg-0 disabled" placeholder="Kullanım Dışı!!!" />
                                         </div>
                                     </div>
                                     <div class="row">
@@ -212,7 +215,7 @@
             </div>
 
 
-            <div class="modal fade" id="kt_modal_export_users" tabindex="-1" aria-hidden="true">
+         <div class="modal fade" id="kt_modal_export_users" tabindex="-1" aria-hidden="true">
                 <!--begin::Modal dialog-->
                 <div class="modal-dialog modal-dialog-centered mw-650px">
                     <div class="modal-content">
@@ -231,8 +234,106 @@
                     </div>
                 </div>
             </div>
+
+  
+            <!-- Bildirim Gönderme Modal -->
+            <div class="modal fade" tabindex="-1" id="send_mobil_notification" tabindex="-1" aria-hidden="true" data-bs-focus="false">
+                <div class="modal-dialog modal-dialog-centered mw-650px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Bildirim Gönder</h5>
+                            <!--begin::Close-->
+                            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                            </div>
+                            <!--end::Close-->
+                        </div>
+
+                        <form id="form_mobile_noti" class="form fv-plugins-bootstrap5 fv-plugins-framework">
+                            <!-- Modal body -->
+                            <div class="modal-body py-10 px-lg-17 ">
+                                <!--begin::Scroll-->
+                                <div class="scroll-y me-n7 pe-7 fv-row" id="kt_modal_new_target_form_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_new_target_form_header" data-kt-scroll-wrappers="#kt_modal_new_target_form_scroll" data-kt-scroll-offset="300px">
+                                     
+                                    <input type="hidden" id="hiddenRowId" name="surveyId">
+                                    <input type="hidden" value="@userGuid" name="SentBy">
+
+                                    <div class="fv-row mb-7">
+                                        <label class="required fs-6 fw-semibold mb-2">Bildirim Başlığı</label>
+                                        <input type="text" class="form-control form-control-solid" name="NotificationTitle" placeholder="Bildirim başlığını girin"   />
+                                        <div class="form-text">Başlık 80 karakterden kısa olmalıdır.</div>
+                                        <div class="fv-plugins-message-container invalid-feedback">
+                                        </div>
+                                    </div>
+                                     
+                                    <div class="fv-row mb-7">
+                                        <label class="required fs-6 fw-semibold mb-2">Bildirim İçeriği</label>
+                                        <textarea class="form-control form-control-solid" rows="4" name="NotificationContent" placeholder="Bildirim içeriğini girin"  ></textarea>
+                                        <div class="form-text">İçerik 1000 karakterden kısa olmalıdır.</div>
+                                        <div class="fv-plugins-message-container invalid-feedback">
+                                        </div>
+                                    </div>
+ 
+                                     
+                                    <div class="fv-row mb-7">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            <input class="form-check-input" type="checkbox" id="scheduledNotification" />
+                                            <label class="form-check-label" for="scheduledNotification">
+                                                Bildirim Zamanını Programla
+                                            </label>
+                                        </div>
+                                    </div>
+                                     
+                                    <div class="fv-row mb-7 d-none" id="scheduledTimeSection">
+                                        <label class="fs-6 fw-semibold mb-2">Gönderim Zamanı</label>
+                                        <input class="form-control form-control-solid" placeholder="Tarih ve Saat Seçin" id="kt_datepicker" name="ScheduledFor" />
+                                    </div>
+
+                                    <!-- Gönderim Özeti -->
+                                    <div class="card bg-light mb-7">
+                                        <div class="card-body">
+                                            <h6 class="mb-3 text-gray-800">Gönderim Özeti</h6>
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Tahmini Alıcı Sayısı:</span>
+                                                    <span class="text-dark fw-bold" id="recipient_count">-</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted">Son Gönderim:</span>
+                                                    <span class="text-dark fw-bold" id="last_sent">-</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Durum:</span>
+                                                    <span class="badge badge-success" id="notification_status">Gönderime Hazır</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!--end::Scroll-->
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer flex-center">
+                                <!-- İptal düğmesi -->
+                                <button type="reset" data-bs-dismiss="modal" class="btn btn-light me-3">İptal</button>
+
+                                <!-- Gönder düğmesi -->
+                                <button type="submit" id="btn_submit_mobile_notification" class="btn btn-primary ">
+                                    <span class="indicator-label">Bildirimi Gönder</span>
+                                    <span class="indicator-progress">
+                                        Lütfen bekleyin... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
     <div class="card-body py-4">
         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_users">
             <thead>
@@ -259,9 +360,8 @@
 @section js {
     <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
-    <script src="~/js/survey/CloseSurvey.js"></script>
     <script src="~/js/survey/LoadTable.js"></script>
- 
+
     <script>
         $(".datepicker").flatpickr({
             enableTime: true,
@@ -270,6 +370,7 @@
         });
     </script>
     <script>
+
         "use strict";
         var KTUsersAddUser = function () {
             const t = document.getElementById("kt_modal_add_user"),
@@ -308,13 +409,13 @@
                                         }
                                     }
                                 },
-                                SurveyLinkText: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Proje Link Text Alani Zorunludur"
-                                        }
-                                    }
-                                },
+                                // SurveyLinkText: {
+                                //     validators: {
+                                //         notEmpty: {
+                                //             message: "Proje Link Text Alani Zorunludur"
+                                //         }
+                                //     }
+                                // },
 
                                 SurveyDescription: {
                                     validators: {
@@ -399,7 +500,7 @@
                                             contentType: false,
                                             success: function (data) {
                                                 console.log(data)
-                                                if (data.Succeeded == true) {
+                                                if (data.succeeded == true) {
                                                     Swal.fire({
                                                         text: data.message,
                                                         icon: "success",

@@ -37,6 +37,10 @@ namespace SiaAdmin.Persistence.Contexts
         public virtual DbSet<AuditLogs> AuditLogs { get; set; }
         public virtual DbSet<DeviceRegistrations> DeviceRegistrations { get; set; }
 
+        public virtual DbSet<NotificationHistory> NotificationHistory { get; set; }
+        public virtual DbSet<NotificationFailure> NotificationFailures { get; set; }
+        public virtual DbSet<NotificationScheduledDeviceTokens> ScheduledNotificationDeviceTokens { get; set; }
+
         #region Custom
 
         public virtual DbSet<UserProfile> UserProfiles { get; set; }
@@ -50,6 +54,7 @@ namespace SiaAdmin.Persistence.Contexts
         public virtual DbSet<MukerreKayit> MukerreKayits { get; set; }
         public virtual DbSet<CustomWaitData> CustomWaitDatas { get; set; }
         public virtual DbSet<UserSurveyInfo> UserSurveyInfos { get; set; }
+        public virtual DbSet<ChurnData> ChurnDatas { get; set; }
         #endregion
 
         #region Stored Procedure
@@ -58,7 +63,14 @@ namespace SiaAdmin.Persistence.Contexts
         public virtual DbSet<PanelistSaatKullanimi> PanelistSaatKullanimi { get; set; }
 
         public virtual DbSet<TanitimAnketiDolduran> TanitimAnketiDolduran { get; set; }
+
+        public virtual DbSet<NotificationCooldownResult> NotificationCooldownResult { get; set; }
         #endregion
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(options => { options.CommandTimeout(180); });
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -272,7 +284,7 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.SurveyText).HasMaxLength(50);
                 entity.Property(e => e.SurveyValidity).HasColumnType("datetime");
                 entity.Property(e => e.Timestamp).HasColumnType("datetime");
-            }); 
+            });
             modelBuilder.Entity<PanelistSaatKullanimi>(entity =>
             {
                 entity.HasNoKey();
@@ -284,6 +296,62 @@ namespace SiaAdmin.Persistence.Contexts
                 entity.Property(e => e.Cumartesi).HasColumnName("6");
                 entity.Property(e => e.Pazar).HasColumnName("7");
 
+            });
+            modelBuilder.Entity<NotificationFailure>(entity =>
+            {
+                entity.ToTable("NotificationFailures", "dbo");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .UseIdentityColumn();
+
+                entity.Property(e => e.UserGuid)
+                    .IsRequired();
+
+                entity.Property(e => e.DeviceToken)
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.ErrorCode)
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ErrorMessage);
+
+                entity.Property(e => e.FailedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                // İlişki
+                entity.HasOne(e => e.NotificationHistory)
+                    .WithMany(h => h.Failures)
+                    .HasForeignKey(e => e.NotificationHistoryId)
+                    .OnDelete(DeleteBehavior.Cascade); // NotificationHistory silinirse, başarısız kayıtları da silinsin
+            });
+            modelBuilder.Entity<NotificationScheduledDeviceTokens>(entity =>
+            {
+                entity.ToTable("NotificationScheduledDeviceTokens", "dbo");
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.DeviceToken)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.DeviceType)
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(20)
+                    .HasDefaultValue("PENDING");
+
+                // İlişkilendirme
+                entity.HasOne(d => d.NotificationHistory)
+                    .WithMany(p => p.DeviceTokens)
+                    .HasForeignKey(d => d.NotificationHistoryId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_ScheduledNotificationDeviceTokens_NotificationHistory");
+
+                // İndeksler
+                entity.HasIndex(e => e.NotificationHistoryId, "IX_ScheduledNotificationDeviceTokens_NotificationHistoryId");
+                entity.HasIndex(e => e.DeviceToken, "IX_ScheduledNotificationDeviceTokens_DeviceToken");
             });
 
 

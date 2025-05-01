@@ -29,7 +29,25 @@ namespace SiaAdmin.Persistence.Repositories
         public async Task<bool> AddAsync(T entity)
         {
             EntityEntry<T> entityEntry = await Table.AddAsync(entity);
-            return entityEntry.State == EntityState.Added;
+            if (entityEntry.State == EntityState.Added)
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<T> AddAsyncReturnEntity(T entity)
+        {
+            EntityEntry<T> entityEntry = await Table.AddAsync(entity);
+
+            if (entityEntry.State == EntityState.Added)
+            { 
+                await _context.SaveChangesAsync();
+                return entity;  
+            }
+
+            return default;
         }
 
         public async Task<bool> AddRangeAsync(List<T> entities)

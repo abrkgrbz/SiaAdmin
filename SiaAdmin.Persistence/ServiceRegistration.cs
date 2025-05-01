@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SiaAdmin.Application.Interfaces;
+using SiaAdmin.Application.Interfaces.NotificationProcessor;
 using SiaAdmin.Application.Interfaces.User;
 using SiaAdmin.Application.ProcedureRepositories.PanelistSaatKullanimi;
 using SiaAdmin.Application.ProcedureRepositories.TanitimAnketiDolduran;
 using SiaAdmin.Application.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Application.Repositories;
 using SiaAdmin.Application.Repositories.DeviceRegistrations;
+using SiaAdmin.Application.Repositories.NotificationFailures;
+using SiaAdmin.Application.Repositories.NotificationHistory;
+using SiaAdmin.Application.Repositories.NotificationScheduledDeviceTokens;
 using SiaAdmin.Application.Repositories.OTPHistory;
 using SiaAdmin.Persistence.Contexts;
 using SiaAdmin.Persistence.ProcedureRepositories.PanelistSaatKullanimi;
@@ -19,6 +23,9 @@ using SiaAdmin.Persistence.ProcedureRepositories.TanitimAnketiDolduran;
 using SiaAdmin.Persistence.ProcedureRepositories.ToplamAnketBilgisi;
 using SiaAdmin.Persistence.Repositories;
 using SiaAdmin.Persistence.Repositories.DeviceRegistrations;
+using SiaAdmin.Persistence.Repositories.NotificationFailures;
+using SiaAdmin.Persistence.Repositories.NotificationHistory;
+using SiaAdmin.Persistence.Repositories.NotificationScheduledDeviceTokens;
 using SiaAdmin.Persistence.Repositories.OTPHistory;
 using SiaAdmin.Persistence.Repositories.UserLog;
 using SiaAdmin.Persistence.Services;
@@ -57,6 +64,15 @@ namespace SiaAdmin.Persistence
             services.AddScoped<IUserLogWriteRepository, UserLogWriteRepository>();
             services.AddScoped<IDeviceRegistrationsWriteRepository, DeviceRegistrationsWriteRepository>();
             services.AddScoped<IDeviceRegistrationsReadRepository, DeviceRegistrationsReadRepository>();
+            services.AddScoped<INotificationHistoryWriteRepository, NotificationHistoryWriteRepository>();
+            services.AddScoped<INotificationHistoryReadRepository, NotificationHistoryReadRepository>();
+            services.AddScoped<INotificationFailuresReadRepository, NotificationFailuresReadRepository>();
+            services.AddScoped<INotificationFailuresWriteRepository, NotificationFailuresWriteRepository>();
+            services.AddScoped<INotificationScheduledDeviceTokensReadRepository, NotificationScheduledDeviceTokensReadRepository>();
+            services.AddScoped<INotificationScheduledDeviceTokensWriteRepository, NotificationScheduledDeviceTokensWriteRepository>();
+           
+
+            services.AddScoped(typeof(IStoredProcedureRepository<>), typeof(StoredProcedureRepository<>));
 
             services.AddScoped<IUserService, UserService>();
 

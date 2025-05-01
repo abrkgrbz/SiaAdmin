@@ -39,9 +39,9 @@ namespace SiaAdmin.Application.Validators.Survey
                 .NotEmpty()
                 .WithMessage("Lütfen Proje Linki'ni boş bırakmayınız");
 
-            RuleFor(c => c.SurveyLinkText)
-                .NotEmpty()
-                .WithMessage("Lütfen 'tıklayınız' ibaresi alanını boş bırakmayınız");
+            //RuleFor(c => c.SurveyLinkText)
+            //    .NotEmpty()
+            //    .WithMessage("Lütfen 'tıklayınız' ibaresi alanını boş bırakmayınız");
 
             RuleFor(c => c.SurveyPoints)
                 .NotEmpty()

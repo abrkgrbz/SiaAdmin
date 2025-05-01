@@ -41,10 +41,22 @@ namespace SiaAdmin.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SendVerificationCode([FromBody] SendVertifactionCodeModel request)
         {
-            var userResult = await Mediator.Send(new InsertOrUpdateUserRequest(){Phone = request.Phone,Browser = request.Browser,RegionCode = request.RegionCode,Ip = request.Ip});
+            var userResult = await Mediator.Send(new InsertOrUpdateUserRequest()
+            {
+                Phone = request.Phone,
+                Browser = request.Browser,
+                RegionCode = request.RegionCode,
+                Ip = request.Ip
+            });
             if (userResult.IsSucceded)
             {
-                var response = await Mediator.Send(new CreateOTPHistoryRequest() { PhoneNumber = request.Phone, IpAdress = request.Ip, Browser = request.Browser });
+                var response = await Mediator.Send(new CreateOTPHistoryRequest()
+                {
+                    PhoneNumber = request.Phone,
+                    IpAdress = request.Ip,
+                    Browser = request.Browser,
+                    RegionCode = request.RegionCode
+                });
                 return Ok(response);
             }
 
@@ -152,6 +164,9 @@ namespace SiaAdmin.API.Controllers
                     request.datas);
             return Ok(result);
         }
+
+
+
         public class SendNotificationData
         {
             public List<string> tokenList { get; set; }

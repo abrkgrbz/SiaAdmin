@@ -14,5 +14,7 @@ namespace SiaAdmin.Application.Interfaces.Sms
         public string ReturnSmsCodeErrorCode(string retval);
 
         public double SendSmsOneToMany( string Recipients,string randomNumber);
+
+        public string SendDataIYS(string regionCode,string msisdn,string internalGuid);
     }
 }

@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "NotificationList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css {
+    <link href="~/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+}
+<!-- Bildirim Listesi Sayfası -->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <h2 class="fw-bold">Mobil Uygulama Bildirimleri</h2>
+        </div>
+        <!--end::Card title-->
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <!--begin::Toolbar-->
+            <div class="d-flex justify-content-end">
+                <!--begin::Filter-->
+                <div class="w-150px me-3">
+                    <!--begin::Select2-->
+                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Durum" data-hide-search="true" id="filter_status">
+                        <option value="">Tümü</option>
+                        <option value="0">Başarılı</option>
+                        <option value="1">Başarısız</option>
+                        <option value="2">İşlemde</option>
+                        <option value="3">İptal Edildi</option>
+                    </select>
+                    <!--end::Select2-->
+                </div>
+                <!--end::Filter-->
+                <!--begin::Filter-->
+                <div class="w-150px me-3">
+                    <!--begin::Select2-->
+                    <select class="form-select form-select-solid" data-control="select2" data-placeholder="Proje" id="filter_project">
+                        <option value="">Tüm Projeler</option>
+                        <!-- Projeler buraya dinamik olarak eklenecek -->
+                    </select>
+                    <!--end::Select2-->
+                </div>
+                <!--end::Filter-->
+                <!--begin::Filter button-->
+                <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                    <i class="ki-duotone ki-filter fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Filtrele
+                </button>
+                <!--end::Filter button-->
+                <!--begin::Menu 1-->
+                <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true" id="kt-toolbar-filter">
+                    <!--begin::Header-->
+                    <div class="px-7 py-5">
+                        <div class="fs-4 text-dark fw-bold">Filtreleme Seçenekleri</div>
+                    </div>
+                    <!--end::Header-->
+                    <!--begin::Separator-->
+                    <div class="separator border-gray-200"></div>
+                    <!--end::Separator-->
+                    <!--begin::Content-->
+                    <div class="px-7 py-5">
+                        <!--begin::Input group-->
+                        <div class="mb-5">
+                            <label class="form-label fs-6 fw-semibold">Tarih Aralığı:</label>
+                            <input class="form-control form-control-solid" placeholder="Tarih Seçin" id="kt_daterangepicker" />
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="mb-5">
+                            <label class="form-label fs-6 fw-semibold">Gönderen:</label>
+                            <select class="form-select form-select-solid" data-control="select2" data-placeholder="Tüm Kullanıcılar" data-allow-clear="true" id="filter_user">
+                                <option value="">Tüm Kullanıcılar</option>
+                                <!-- Kullanıcılar buraya dinamik olarak eklenecek -->
+                            </select>
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Actions-->
+                        <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-light btn-active-light-primary me-2" data-kt-menu-dismiss="true" id="reset_filter">Sıfırla</button>
+                            <button type="submit" class="btn btn-primary" data-kt-menu-dismiss="true" id="apply_filter">Uygula</button>
+                        </div>
+                        <!--end::Actions-->
+                    </div>
+                    <!--end::Content-->
+                </div>
+                <!--end::Menu 1-->
+                <!--begin::Export-->
+                <button type="button" class="btn btn-light-primary me-3" id="export_notifications">
+                    <i class="ki-duotone ki-exit-up fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Dışa Aktar
+                </button>
+                <!--end::Export-->
+                <button id="show_all" type="button" class="btn btn-light-success">Tümünü Göster</button>
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card toolbar-->
+    </div>
+    <!--end::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body py-4">
+        <!--begin::Table-->
+        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_notifications_table">
+            <thead>
+                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                    <th class="min-w-125px">Proje</th>
+                    <th class="min-w-125px">Başlık</th>
+                    <th class="min-w-100px">Gönderim Zamanı</th>
+                    <th class="min-w-100px">Durum</th>
+                    <th class="min-w-100px">Alıcı Sayısı</th>
+                    <th class="min-w-100px">Gönderen</th>
+                    <th class="text-end min-w-100px">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="fw-semibold text-gray-600">
+                <!-- Tablo verileri AJAX ile doldurulacak -->
+            </tbody>
+        </table>
+        <!--end::Table-->
+    </div>
+    <!--end::Card body-->
+</div>
+
+<!-- Bildirim Detay Modal -->
+<div class="modal fade" tabindex="-1" id="notification_detail_modal">
+    <div class="modal-dialog modal-dialog-centered mw-900px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bildirim Detayı</h5>
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+            </div>
+
+            <div class="modal-body py-lg-10 px-lg-10">
+                <div class="d-flex flex-column">
+                    <!-- Bildirim Başlığı -->
+                    <div class="mb-5">
+                        <h3 class="notification-title fw-bold fs-2 mb-1">-</h3>
+                        <div class="text-muted fs-6">
+                            <span class="notification-project">-</span> projesi için
+                            <span class="notification-date">-</span> tarihinde gönderildi
+                        </div>
+                    </div>
+
+                    <!-- Durum Kartı -->
+                    <div class="card bg-light mb-6">
+                        <div class="card-body p-5">
+                            <div class="d-flex flex-wrap">
+                                <!-- Durum -->
+                                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 me-3 mb-3">
+                                    <div class="fs-6 text-gray-800 fw-bold">Durum</div>
+                                    <div class="notification-status">-</div>
+                                </div>
+
+                                <!-- Alıcı Sayısı -->
+                                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 me-3 mb-3">
+                                    <div class="fs-6 text-gray-800 fw-bold">Alıcı Sayısı</div>
+                                    <div class="fs-6 text-gray-600 notification-recipients">-</div>
+                                </div>
+
+                                <!-- Gönderen -->
+                                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 me-3 mb-3">
+                                    <div class="fs-6 text-gray-800 fw-bold">Gönderen</div>
+                                    <div class="fs-6 text-gray-600 notification-sender">-</div>
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="mb-6">
+                        <h4 class="fs-5 fw-semibold mb-2">Bildirim İçeriği</h4>
+                        <div class="bg-white p-5 rounded border notification-content">-</div>
+                    </div>
+                     
+                    <div class="mb-6 notification-error-container d-none">
+                        <h4 class="fs-5 fw-semibold mb-2 text-danger">Hata Detayı</h4>
+                        <div class="bg-light-danger p-5 rounded border border-danger">
+                            <div class="d-flex">
+                                <span class="fw-bold text-danger me-2">Hata Kodu:</span>
+                                <span class="notification-error-code">-</span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="fw-bold text-danger me-2">Hata Mesajı:</span>
+                                <span class="notification-error-message">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yanıt Payload (Teknik Detay) -->
+                    <div class="mt-2">
+                        <a class="cursor-pointer text-primary" data-bs-toggle="collapse" href="#responsePayloadCollapse" role="button">
+                            <i class="ki-duotone ki-code fs-5 me-1">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                            </i>
+                            Teknik Detayları Göster
+                        </a>
+                        <div class="collapse mt-2" id="responsePayloadCollapse">
+                            <div class="bg-light p-5 rounded border">
+                                <pre class="notification-payload">-</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Kapat</button>
+                <!-- Yeniden Gönder butonu (sadece başarısız bildirimlerde görünür) -->
+                <button type="button" class="btn btn-primary d-none notification-retry-btn">
+                    <i class="ki-duotone ki-abstract-26 fs-7">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Yeniden Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+@section js{
+    <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+    <script src="~/js/notification/SendNotification.js"></script>
+    <script src="~/js/notification/NotificationList.js"></script>
+}

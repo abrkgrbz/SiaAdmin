@@ -12,11 +12,10 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
         [Required]
         public string SurveyDescription { get; set; }
         [Required]
-        public string SurveyLink { get; set; }
-        [Required]
+        public string SurveyLink { get; set; } 
         public string SurveyLinkText { get; set; }
         public DateTime? SurveyValidity { get; set; }
-        private int SurveyActive { get; set; } = 1;
+        public int SurveyActive { get; set; } = 1;
         public DateTime? SurveyStartDate { get; set; }
         [Required]
         public int SurveyPoints { get; set; }

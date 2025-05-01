@@ -21,7 +21,7 @@ var KTDatatablesServerSide = function () {
             language: {
                 url: '/assets/customjs/turkish.json',
             },
-
+           
             columns: [
                 { data: "surveyUserGuid", name: "SurveyUserGuid" },
                 { data: "toplamKatilim", name: "ToplamKatilim" },
@@ -68,23 +68,12 @@ var KTDatatablesServerSide = function () {
             dt.search(paymentValue).draw();
         });
     }
-    var handleResetForm = () => {
-
-        const resetButton = document.querySelector('[data-kt-subscription-table-filter="reset"]');
-
-
-        resetButton.addEventListener('click', function () {
-
-            filterPayment[0].checked = true;
-            dt.search('').draw();
-        });
-    }
+ 
 
     return {
         init: function () {
             initDatatable();
-            handleSearchDatatable();
-            handleResetForm();
+            handleSearchDatatable(); 
         }
     }
 }();

@@ -17,9 +17,10 @@ namespace SiaAdmin.Application.Features.Commands.Survey.CreateSurvey
         public async Task<CreateSurveyResponse> Handle(CreateSurveyRequest request, CancellationToken cancellationToken)
         {
             try
-            {
-                
+            { 
                 var mappingProfile = _mapper.Map<Domain.Entities.Models.Survey>(request);
+                mappingProfile.SurveyText = mappingProfile.SurveyText.ToUpper();
+                mappingProfile.SurveyLinkText = "tıklayınız.";
                 await _surveyWriteRepository.AddAsync(mappingProfile);
                 await _surveyWriteRepository.SaveAsync(request.UserId,true);
                 return new() { Succeeded = true,Message = "Anket Ekleme İşlemi Başarıyla Gerçekleştirildi."};

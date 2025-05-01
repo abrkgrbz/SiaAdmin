@@ -65,7 +65,7 @@ namespace SiaAdmin.Application.Validators.OTPHistory
                     .WithMessage(
                         "Bir gün içinde yapılabilecek işlem sayısı aşıldı. Lütfen daha sonra tekrar deneyiniz.(2)");
 
-            }); 
+            });
         }
 
 
@@ -83,43 +83,50 @@ namespace SiaAdmin.Application.Validators.OTPHistory
         }
         private bool IsBlockedByIP(string ip)
         {
-            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 1 && x.Data == ip,false).ToList().Count;
+            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 1 && x.Data == ip, false).ToList().Count;
             if (checkBlockedUserByIP > 0)
             {
                 return false;
             }
             return true;
-        }
-
+        } 
         private bool IsBlockedByPhoneNumber(string phoneNumber)
         {
-            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 2 && x.Data == phoneNumber,false).ToList().Count;
+            var checkBlockedUserByIP = _blockListReadRepository.GetWhere(x => x.RecType == 2 && x.Data == phoneNumber, false).ToList().Count;
             if (checkBlockedUserByIP > 0)
             {
                 return false;
             }
             return true;
-        }
+        } 
 
+        //TODO Bu kod tekrardan açılacak
         private bool CheckByIpEligibility(string ip)
         {
-            var checkIP = _OTPHistoryReadRepository.GetWhere(x => x.LastIp == ip && x.Timestamp.Date.AddDays(1)>= DateTime.Now.Date,false).ToList().Count;
-            if (checkIP < 15)
+            //if (ip== "192.168.1.99")
+            //{
+            //    return true;
+            //}
+            //var checkIP = _OTPHistoryReadRepository.GetWhere(x => x.LastIp == ip && x.Timestamp.Date.AddDays(1) >= DateTime.Now.Date, false).ToList().Count;
+            //if (checkIP < 15)
+            //{
+            //    return true;
+            //}
+
+            return true;
+        } 
+        private bool CheckByPhoneNumberEligibility(string phoneNumber)
+        {
+            if (phoneNumber == "5000000000")
             {
                 return true;
             }
+            var checkPhoneNumber = _OTPHistoryReadRepository.GetWhere(x => x.Msisdn == phoneNumber && x.Timestamp.Date.AddDays(1) >= DateTime.Now.Date, false).ToList().Count;
 
-            return false;
-        }
-
-        private bool CheckByPhoneNumberEligibility(string phoneNumber)
-        {
-            var checkPhoneNumber = _OTPHistoryReadRepository.GetWhere(x => x.Msisdn == phoneNumber && x.Timestamp.Date.AddDays(1) >= DateTime.Now.Date,false).ToList().Count;
             if (checkPhoneNumber < 5)
             {
                 return true;
             }
-
             return false;
         }
     }

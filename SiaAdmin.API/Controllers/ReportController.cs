@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SiaAdmin.Application.Features.Queries.Dashboard.GetNumberOfPanelist;
+using Microsoft.AspNetCore.Mvc; 
 using SiaAdmin.Application.Features.Queries.SiaUser.GetNumberOfUser;
 using SiaAdmin.Application.Features.Queries.StoredProcedure.ToplamAnketBilgisi;
 

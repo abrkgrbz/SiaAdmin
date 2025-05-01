@@ -13,8 +13,8 @@ namespace SiaAdmin.Infrastructure.Services
         static int _channelCode = 583;
         static string _username = "otpsiainsight";
         static string _password = "eYs5tAh9";
-      
-        
+
+
         public string Post2SmsOrigin(string Data2Post)
         {
             WebRequest request = WebRequest.Create("http://processor.smsorigin.com/xml/process.aspx");
@@ -52,7 +52,7 @@ namespace SiaAdmin.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public double SendSmsOneToMany(  string Recipients,string randomNumber)
+        public double SendSmsOneToMany(string Recipients, string randomNumber)
         {
             string originator = "SIAINSIGHT";
             string message = randomNumber + " şifresi ile Sia Live Panele girebilirsiniz. Şifre talebinde bulunmadıysanız, bu mesajı dikkate almayınız.";
@@ -84,6 +84,43 @@ namespace SiaAdmin.Infrastructure.Services
                 double.TryParse(response.Substring(3), out retval);
             }
             return retval;
+        }
+
+        public string SendDataIYS( string regionCode, string msisdn, string internalGuid)
+        {
+            int _channelCode = 583;
+            string _username = "siabulk";
+            string _password = "x7xU26GX";
+
+            DateTime today = DateTime.Now;
+
+            string request = string.Format(@"
+<Request>
+<Command>151</Command>
+<PlatformID>1</PlatformID>
+<ChannelCode>{0}</ChannelCode>
+<UserName>{1}</UserName>
+<PassWord>{2}</PassWord>
+<Option>1</Option>
+<List>
+<Item>
+<SubscriberType>1</SubscriberType>
+<CommunicationType>1</CommunicationType>
+<Subscriber>" + regionCode + msisdn + @"</Subscriber>
+<SourceProcessId>" + internalGuid + @"</SourceProcessId>
+<RecordDate>" + today.ToString("yyyyMMddHHmmss") + @"</RecordDate>
+<RelationType>1</RelationType>  
+<IysRecordSource>HS_EORTAM</IysRecordSource>
+</Item>
+</List>
+</Request>
+",
+                _channelCode,
+                _username,
+                _password);
+
+            string response = Post2SmsOrigin(request);
+            return response;
         }
     }
 }

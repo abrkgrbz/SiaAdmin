@@ -14,7 +14,10 @@ namespace SiaAdmin.Application.Features.Queries.Incentive.GetAllIncentice
         public int Points { get; set; }
 
         public int Active { get; set; }
-
+        public string? Description { get; set; }
+        public string? ImagePath { get; set; }
+        public string? ImageWithCSS { get; set; }
+        public int ShowInDisplay { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

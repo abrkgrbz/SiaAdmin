@@ -15,7 +15,11 @@ namespace SiaAdmin.Domain.Entities.Models
         public int Points { get; set; }
 
         public int Active { get; set; }
-
+        public string? Description { get; set; }
+        public string? ImagePath { get; set; }
+        public string? ImageWithCSS { get; set; }
+        public int ShowInDisplay { get; set; }
+        public int Test { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

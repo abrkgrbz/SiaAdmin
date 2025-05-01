@@ -14,9 +14,16 @@ using SiaAdmin.Infrastructure.Services;
 using System.Net.Http.Headers;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SiaAdmin.Application.Interfaces.Mail;
 using SiaAdmin.Application.Interfaces.SiaUser;
+using SiaAdmin.Application.Interfaces.PushNotification;
+using SiaAdmin.Application.Interfaces.BackgroundJob;
+using SiaAdmin.Application.Interfaces.NotificationScheduler;
+using SiaAdmin.Application.Interfaces.NotificationProcessor;
 
 namespace SiaAdmin.Infrastructure
 {
@@ -24,11 +31,17 @@ namespace SiaAdmin.Infrastructure
     {
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddSingleton<IExcelService, ExcelService>();
+	        services.AddSingleton<IDataTableExcelService, DataTableExcelService>();
+			services.AddSingleton<IExcelService, ExcelService>();
             services.AddSingleton<IConvertExcelFile, ConvertExcelFileService>();
             services.AddSingleton<ISmsService, SmsService>();
             services.AddSingleton<ISiaUserService, SiaUserService>();
-            services.AddTransient<IAuthService, AuthService>(); 
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IPushNotificationService, FirebasePushNotificationService>();
+            services.AddTransient<IBackgroundJobService, HangfireBackgroundJobService>();
+            services.AddTransient<INotificationSchedulerService, NotificationSchedulerService>();
+            services.AddTransient<INotificationProcessor, NotificationProcessor>();
             services.AddHttpClient<FirebaseService>(client =>
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -54,7 +67,29 @@ namespace SiaAdmin.Infrastructure
                     };
                 });
 
-          
+            services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.FromSeconds(15),
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Hangfire Server
+            services.AddHangfireServer(options =>
+            {
+                options.WorkerCount = Configuration.HangfireWorkerCount;
+                options.Queues = Configuration.HangfireQueues;
+                options.ServerName = Configuration.HangfireServerName;
+            });
+
+           
         }
+
     }
 }

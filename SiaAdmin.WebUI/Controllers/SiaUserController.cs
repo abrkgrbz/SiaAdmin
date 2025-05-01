@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetAllSiaUser;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser;
+using SiaAdmin.Application.Features.Queries.SurveyLog.GetUserLogDetail;
 using SiaAdmin.Application.Features.Queries.User.GetUserList;
 using SiaAdmin.WebUI.Models;
 
@@ -28,8 +29,9 @@ namespace SiaAdmin.WebUI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("panelist-profil/{guid}")]
-        public async Task<IActionResult> SiaUserProfile(string guid)
+        [Route("/adm/panelist-profil")]
+        [HttpPost]
+        public async Task<IActionResult> SiaUserProfile([FromForm] string guid)
         {
             SiaUserProfileViewModel model = new();
             GetByGuidSiaUserRequest getByGuidSiaUserRequest = new GetByGuidSiaUserRequest();
@@ -47,7 +49,17 @@ namespace SiaAdmin.WebUI.Controllers
             model.Surname=response.GetUserByGuidViewModel.Surname;
             return View(model);
         }
-     
+
+        public async Task<IActionResult> SiaUserProfileDetails(GetUserLogdDetailRequest getUserLogdDetailRequest)
+        {
+
+            getUserLogdDetailRequest.orderColumnIndex = Request.Form["order[0][column]"].FirstOrDefault();
+            getUserLogdDetailRequest.orderDir = Request.Form["order[0][dir]"].FirstOrDefault();
+            getUserLogdDetailRequest.orderColumnName = Request.Form[$"columns[{getUserLogdDetailRequest.orderColumnIndex}][name]"].FirstOrDefault();
+            getUserLogdDetailRequest.searchValue = Request.Form["search[value]"].FirstOrDefault();
+            var response = await Mediator.Send(getUserLogdDetailRequest);
+            return Ok(response);
+        }
      
 
     }
