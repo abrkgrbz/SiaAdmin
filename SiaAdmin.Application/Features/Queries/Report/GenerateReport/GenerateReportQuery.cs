@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MediatR;
 using SiaAdmin.Application.DTOs.Report;
+using SiaAdmin.Application.Interfaces.QueryBuilder;
 using SiaAdmin.Application.Interfaces.Report;
 using SiaAdmin.Application.Interfaces.User;
 
@@ -23,8 +24,7 @@ namespace SiaAdmin.Application.Features.Queries.Report.GenerateReport
 
     public class GenerateReportQueryHandler : IRequestHandler<GenerateReportQuery, ReportResultDto>
     {
-        private readonly IReportService _reportService;
-
+        private readonly IReportService _reportService;  
         public GenerateReportQueryHandler(IReportService reportService, IUserService userService)
         {
             _reportService = reportService;
@@ -33,6 +33,7 @@ namespace SiaAdmin.Application.Features.Queries.Report.GenerateReport
         public async Task<ReportResultDto> Handle(GenerateReportQuery request, CancellationToken cancellationToken)
         {
             var reportDto = await _reportService.GetReportByIdAsync(request.ReportId);
+    
             if (reportDto == null)
             {
                 throw new KeyNotFoundException($"Rapor bulunamadı: {request.ReportId}");

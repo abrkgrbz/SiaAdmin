@@ -112,16 +112,8 @@ namespace SiaAdmin.Infrastructure.Services
              
             var report = await _reportRepository.GetReportByIdAsync(reportId);
              
-            byte[] excelData; 
-            if (reportDto.ReportType.ToLower() == "custom" && reportDto.Id == "601")  
-            {
-                excelData = await _excelService.GenerateExcelFromTemplateAsync(data, report, "TemplateTanisma.xlsx");
-            }
-            else
-            {
-                excelData = await _excelService.GenerateExcelAsync(data, report);
-            }
-
+            byte[] excelData;
+            excelData = await _excelService.GenerateExcelAsync(data, report); 
             return excelData;
         }
     }
