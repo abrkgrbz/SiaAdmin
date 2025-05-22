@@ -13,6 +13,7 @@ using SiaAdmin.Application.DTOs.Excel;
 using SiaAdmin.Application.Enums;
 using SiaAdmin.Application.Exceptions;
 using SiaAdmin.Application.Interfaces.Excel;
+using SiaAdmin.Domain.Entities.ReportModel;
 
 namespace SiaAdmin.Infrastructure.Services
 {
@@ -74,6 +75,14 @@ namespace SiaAdmin.Infrastructure.Services
             return null;
         }
 
+        public Task<byte[]> GenerateExcelFromTemplateAsync(DataTable data, Report report, string templateFileName)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<byte[]> GenerateExcelAsync(DataTable data, Report report)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

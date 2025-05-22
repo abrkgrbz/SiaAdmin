@@ -116,6 +116,11 @@ var NotificationList = function () {
                     $('.notification-content').text(data.content);
                     $('.notification-payload').text(data.payload);
 
+                    // Yeni eklenen alanları doldur
+                    $('.notification-success-count').text(data.successCount || '0');
+                    $('.notification-failed-count').text(data.failedCount || '0');
+                    $('.notification-update-time').text(data.updateTime || '-');
+
                     // Durum bilgisi
                     var statusClass = {
                         0: 'success', // Başarılı
@@ -132,7 +137,8 @@ var NotificationList = function () {
                     };
 
                     $('.notification-status').html(`<div class="badge badge-light-${statusClass[data.status]} fw-bold">${statusText[data.status]}</div>`);
-
+                    $('.notification-success-count').text(data.successCount || '0');
+                    $('.notification-failed-count').text(data.failedCount || '0');
                     if (data.status === 1 && data.errorDetails) {
                         $('.notification-error-code').text(data.errorDetails.code || '-');
                         $('.notification-error-message').text(data.errorDetails.message || '-');
@@ -156,7 +162,6 @@ var NotificationList = function () {
             }
         });
     };
-
 
     var initNotificationActions = function () {
         // Detay görüntüleme

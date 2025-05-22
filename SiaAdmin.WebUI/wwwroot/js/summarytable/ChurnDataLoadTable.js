@@ -109,7 +109,7 @@ var KTDatatablesServerSide = function () {
                 }
             });
         });
-     
+
     }
     return {
         init: function () {

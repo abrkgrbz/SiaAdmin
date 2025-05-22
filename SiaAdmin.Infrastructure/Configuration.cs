@@ -15,39 +15,7 @@ namespace SiaAdmin.Infrastructure
             configurationManager.AddJsonFile("appsettings.json");
             return configurationManager;
         });
-
-        #region Revize
-        //static public string FirebaseApiKey
-        //{
-        //    get
-        //    {
-        //        ConfigurationManager configurationManager = new();
-        //        configurationManager.AddJsonFile("appsettings.json");
-        //        return configurationManager.GetValue<string>("Firebase:ApiKey");
-        //    }
-        //}
-        //static public string FirebaseAudience
-        //{
-        //    get
-        //    {
-        //        ConfigurationManager configurationManager = new();
-        //        configurationManager.AddJsonFile("appsettings.json");
-        //        return configurationManager.GetValue<string>("Authentication:Audience");
-        //    }
-        //}
-
-        //static public string FirebaseAuthority
-        //{
-        //    get
-        //    {
-        //        ConfigurationManager configurationManager = new();
-        //        configurationManager.AddJsonFile("appsettings.json");
-        //        return configurationManager.GetValue<string>("Authentication:ValidIssuer");
-        //    }
-        //}
-
-
-        #endregion
+ 
 
         private static IConfiguration Config => _configuration.Value;
 

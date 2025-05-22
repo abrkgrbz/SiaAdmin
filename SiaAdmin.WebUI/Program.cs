@@ -1,4 +1,6 @@
+using FirebaseAdmin;
 using FluentValidation.AspNetCore;
+using Google.Apis.Auth.OAuth2;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -26,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader()));
-
+builder.Services.AddResponseCaching();
 
 
 builder.Services.AddAuthorization(options =>
@@ -58,7 +60,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseResponseCaching();
 app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 app.UseAuthorization();
 
@@ -78,5 +80,12 @@ RecurringJob.AddOrUpdate<INotificationProcessor>(
     processor => processor.ProcessPendingNotifications(),
     Cron.Minutely());
 
- 
+string configPath = Path.Combine(builder.Environment.ContentRootPath, "firebase_config.json");
+if (File.Exists(configPath))
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile(configPath)
+    });
+}
 app.Run();

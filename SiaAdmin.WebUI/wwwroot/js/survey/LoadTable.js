@@ -548,3 +548,69 @@ document.addEventListener('click', function (e) {
         NotificationSender.openNotificationModal(projectId, projectName);
     }
 });
+
+// Excel İndirme Fonksiyonunu Tanımlama
+function exportTableToExcel() {
+    // Excel indirme isteğini göndermeden önce kullanıcıya bilgi ver
+    Swal.fire({
+        title: 'Excel İndiriliyor',
+        text: 'Excel dosyası hazırlanıyor, lütfen bekleyin...',
+        icon: 'info',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // AJAX isteği ile Excel dosyasını indir
+    $.ajax({
+        type: 'GET',
+        url: 'export-survey-excel',
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (data, status, xhr) {
+            Swal.close();
+
+            // Dosya adını belirle (sunucudan gelen header'a göre veya varsayılan)
+            var filename = "";
+            var disposition = xhr.getResponseHeader('Content-Disposition');
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                var matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            if (!filename) {
+                filename = 'projeler_listesi_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+            }
+
+            // Dosyayı indir
+            var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            window.URL.revokeObjectURL(link.href);
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: 'Hata',
+                text: 'Excel dosyası indirme sırasında bir hata oluştu. Lütfen tekrar deneyin.',
+                icon: 'error',
+                confirmButtonText: 'Tamam'
+            });
+            console.error('Excel indirme hatası:', error);
+        }
+    });
+}
+
+// Sayfa yüklendiğinde Excel İndirme butonuna tıklama olayını ekle
+document.addEventListener('DOMContentLoaded', function () {
+    var exportButton = document.getElementById('btnExcelExport');
+    if (exportButton) {
+        exportButton.addEventListener('click', exportTableToExcel);
+    }
+});

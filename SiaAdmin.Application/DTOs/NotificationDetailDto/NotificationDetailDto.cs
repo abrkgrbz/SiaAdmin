@@ -15,9 +15,11 @@ namespace SiaAdmin.Application.DTOs.NotificationDetailDto
         public string sendTime { get; set; }
         public int status { get; set; }
         public int? recipientCount { get; set; }
+        public int? successCount { get; set; }
+        public int? failedCount { get; set; }
+        public string updateTime { get; set; }
         public string sender { get; set; }
-        public string provider { get; set; }
-        public string imageUrl { get; set; }
+        public string provider { get; set; } 
         public ErrorDetailDto errorDetails { get; set; }
         public string payload { get; set; }
     }

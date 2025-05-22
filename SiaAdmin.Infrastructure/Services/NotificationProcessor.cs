@@ -128,17 +128,19 @@ namespace SiaAdmin.Infrastructure.Services
                     .ToList();
 
                 // Additional data hazırla
-                Dictionary<string, string> additionalData = new Dictionary<string, string>(); 
+                Dictionary<string, string> additionalData = new Dictionary<string, string>();
 
-                // Toplu bildirim gönderimi yap
-                bool success = await _pushNotificationService.SendBulkNotificationAsync(
+                // Toplu bildirim gönderimi yap (detailed versiyonu kullan)
+                var notificationResult = await _pushNotificationService.SendBulkNotificationDetailedAsync(
                     tokenList,
                     notification.NotificationTitle,
                     notification.NotificationContent,
                     additionalData);
 
-                int successCount = 0;
-                int failCount = 0;
+                // Sonuçları kullan
+                bool success = notificationResult.Success;
+                int successCount = notificationResult.SuccessCount;
+                int failCount = notificationResult.FailureCount;
 
                 // Token durumlarını güncelle
                 foreach (var token in pendingTokens)
@@ -149,20 +151,18 @@ namespace SiaAdmin.Infrastructure.Services
                     token.UpdatedAt = DateTime.UtcNow;
 
                     _notificationScheduledDeviceTokensWriteRepository.Update(token);
-
-                    if (success) successCount++;
-                    else failCount++;
                 }
 
                 // Bildirim durumunu güncelle
-                notification.Status =0;
+                notification.Status = success ? 0 : 1;
                 notification.ScheduleStatus = "Completed";
                 notification.SentAt = DateTime.UtcNow;
                 notification.SuccessfulDeliveryCount = successCount;
                 notification.FailedDeliveryCount = failCount;
                 notification.UpdatedAt = DateTime.UtcNow;
+                notification.ResponsePayload = notificationResult.Payload; // Payload'ı kaydet
 
-                 _notificationHistoryWriteRepository.Update(notification);
+                _notificationHistoryWriteRepository.Update(notification);
 
                 _logger.LogInformation($"Bildirim başarıyla işlendi. NotificationId: {notificationId}, " +
                                      $"Başarılı: {successCount}, Başarısız: {failCount}");
@@ -176,6 +176,15 @@ namespace SiaAdmin.Infrastructure.Services
                 notification.ErrorMessage = ex.Message;
                 notification.UpdatedAt = DateTime.UtcNow;
                 notification.ScheduleStatus = "Failed";
+                notification.ResponsePayload = Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    Error = new
+                    {
+                        Type = ex.GetType().Name,
+                        Message = ex.Message,
+                        StackTrace = ex.StackTrace
+                    }
+                }, Newtonsoft.Json.Formatting.Indented);
 
                 _notificationHistoryWriteRepository.Update(notification);
 
@@ -186,13 +195,12 @@ namespace SiaAdmin.Infrastructure.Services
                     notification.Status = 2;
                     notification.ScheduleStatus = "Scheduled";
                     _notificationHistoryWriteRepository.Update(notification);
-                     
+
                     _backgroundJobService.Schedule<INotificationProcessor>(
                         processor => processor.ProcessNotification(notificationId),
                         TimeSpan.FromMinutes(15));
                 }
             }
-
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SiaAdmin.Application.Features.Queries.Dashboard.GetPassiveUserStats;
+using SiaAdmin.Application.Features.Queries.Dashboard.GetProfileLifetimeStats;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetNumberOfUser;
 using SiaAdmin.Application.Features.Queries.StoredProcedure.TanitimAnketiDolduran;
 using SiaAdmin.Application.Features.Queries.StoredProcedure.ToplamAnketBilgisi;
@@ -52,6 +54,20 @@ namespace SiaAdmin.WebUI.Controllers
         {
             var response = await Mediator.Send(new GetListLastSeenSaatRequest());
             return Ok(response);
+        }
+
+        [HttpGet("profile-lifetime")]
+        public async Task<IActionResult> GetProfileLifetimeStats(GetProfileLifetimeStatsRequest request)
+        {
+            var response = await Mediator.Send(request);
+            return Ok(new{data= response });
+        }
+
+        [HttpGet("passive-users")]
+        public async Task<IActionResult> GetPassiveUserStats(GetPassiveUserStatsRequest request)
+        {
+            var response = await Mediator.Send(request);
+            return Ok(new { data = response });
         }
     }
 }

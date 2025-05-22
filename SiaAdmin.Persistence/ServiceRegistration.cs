@@ -17,6 +17,7 @@ using SiaAdmin.Application.Repositories.NotificationFailures;
 using SiaAdmin.Application.Repositories.NotificationHistory;
 using SiaAdmin.Application.Repositories.NotificationScheduledDeviceTokens;
 using SiaAdmin.Application.Repositories.OTPHistory;
+using SiaAdmin.Application.Repositories.Report;
 using SiaAdmin.Persistence.Contexts;
 using SiaAdmin.Persistence.ProcedureRepositories.PanelistSaatKullanimi;
 using SiaAdmin.Persistence.ProcedureRepositories.TanitimAnketiDolduran;
@@ -27,6 +28,7 @@ using SiaAdmin.Persistence.Repositories.NotificationFailures;
 using SiaAdmin.Persistence.Repositories.NotificationHistory;
 using SiaAdmin.Persistence.Repositories.NotificationScheduledDeviceTokens;
 using SiaAdmin.Persistence.Repositories.OTPHistory;
+using SiaAdmin.Persistence.Repositories.Report;
 using SiaAdmin.Persistence.Repositories.UserLog;
 using SiaAdmin.Persistence.Services;
 
@@ -70,7 +72,7 @@ namespace SiaAdmin.Persistence
             services.AddScoped<INotificationFailuresWriteRepository, NotificationFailuresWriteRepository>();
             services.AddScoped<INotificationScheduledDeviceTokensReadRepository, NotificationScheduledDeviceTokensReadRepository>();
             services.AddScoped<INotificationScheduledDeviceTokensWriteRepository, NotificationScheduledDeviceTokensWriteRepository>();
-           
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             services.AddScoped(typeof(IStoredProcedureRepository<>), typeof(StoredProcedureRepository<>));
 

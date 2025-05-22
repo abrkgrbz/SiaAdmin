@@ -1,381 +1,558 @@
 ﻿@model SiaUserProfileViewModel
 @{
-    ViewData["Title"] = "SiaUserProfile";
+    ViewData["Title"] = "Kullanıcı Profili";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="d-flex flex-column flex-lg-row">
-    <div class="flex-column flex-lg-row-auto w-lg-250px w-xl-350px mb-10">
-        <!--begin::Card-->
-        <div class="card mb-5 mb-xl-8">
-            <!--begin::Card body-->
-            <div class="card-body">
-                <!--begin::Summary-->
-                <!--begin::User Info-->
-                <div class="d-flex flex-center flex-column py-5">
 
-                    <!--begin::Name-->
-                    <a href="#" class="fs-3 text-gray-800 text-hover-primary fw-bolder mb-3">@Model.Name @Model.Surname</a>
-
-                    <!--end::Info heading-->
-                    <div class="d-flex flex-wrap flex-center">
-                        <!--begin::Stats-->
-                        <div class="border border-gray-300 border-dashed rounded py-3 px-3 mb-3">
-                            <div class="fs-4 fw-bolder text-gray-700">
-                                <span class="w-75px">@Model.LoginCount</span>
-                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
-                                <span class="svg-icon svg-icon-3 svg-icon-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor"></rect>
-                                        <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="currentColor"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                            </div>
-                            <div class="fw-bold text-muted">Login Count</div>
-                        </div>
-                        <!--end::Stats-->
-                        <!--begin::Stats-->
-                        <div class="border border-gray-300 border-dashed rounded py-3 px-3 mx-4 mb-3">
-                            <div class="fs-4 fw-bolder text-gray-700">
-
-                                <!--begin::Svg Icon | path: icons/duotune/arrows/arr065.svg-->
-                                <!--end::Svg Icon-->
-                            </div>
-                            @if (Model.Active == 1)
-                            {
-                                <span class="svg-icon svg-icon-success svg-icon-2hx">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
-                                        <path d="M10.4343 12.4343L8.75 10.75C8.33579 10.3358 7.66421 10.3358 7.25 10.75C6.83579 11.1642 6.83579 11.8358 7.25 12.25L10.2929 15.2929C10.6834 15.6834 11.3166 15.6834 11.7071 15.2929L17.25 9.75C17.6642 9.33579 17.6642 8.66421 17.25 8.25C16.8358 7.83579 16.1642 7.83579 15.75 8.25L11.5657 12.4343C11.2533 12.7467 10.7467 12.7467 10.4343 12.4343Z" fill="currentColor" />
-                                    </svg>
-                                </span>
-                                <div class="fw-bold text-muted">Aktif</div>
-                            }
-                            else
-                            {
-                                <span class="svg-icon svg-icon-danger svg-icon-2hx">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
-                                        <rect x="7" y="15.3137" width="12" height="2" rx="1" transform="rotate(-45 7 15.3137)" fill="currentColor" />
-                                        <rect x="8.41422" y="7" width="12" height="2" rx="1" transform="rotate(45 8.41422 7)" fill="currentColor" />
-                                    </svg>
-                                </span>
-                                <div class="fw-bold text-muted">Pasif</div>
-                            }
-                        </div>
-                        <!--end::Stats-->
-
+<div class="container-fluid">
+    <!-- Profil Üst Bilgi Kartı -->
+    <div class="card card-flush mb-6">
+        <div class="card-header pt-5">
+            <div class="d-flex align-items-center position-relative">
+                <!-- Kullanıcı Avatar (İsteğe bağlı olarak eklenebilir) -->
+                <div class="symbol symbol-100px symbol-circle me-5">
+                    <div class="symbol-label fs-1 fw-bolder bg-light-primary text-primary">
+                        @(Model.Name?.Substring(0, 1))@(Model.Surname?.Substring(0, 1))
                     </div>
-                    <!--end::Info-->
                 </div>
-                <!--end::User Info-->
-                <!--end::Summary-->
-                <!--begin::Details toggle-->
-                <div class="d-flex flex-stack fs-4 py-3">
-                    <div class="fw-bolder rotate collapsible" data-bs-toggle="collapse" href="#kt_user_view_details" role="button" aria-expanded="false" aria-controls="kt_user_view_details">
-                        Detay
-                        <span class="ms-2 rotate-180">
-                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
-                            <span class="svg-icon svg-icon-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor"></path>
-                                </svg>
-                            </span>
-                            <!--end::Svg Icon-->
-                        </span>
-                    </div>
-                    <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="" data-bs-original-title="Kullanıcıyı Blocke Et">
-                        <a href="#" class="btn btn-sm btn-light-danger" data-bs-toggle="modal" data-bs-target="#kt_modal_update_details">Blocke Et</a>
-                    </span>
-                    <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="" data-bs-original-title="Kullanıcı Profile Geçiş">
-                        <a href="#" class="btn btn-sm btn-light-success">Profile Geçiş</a>
-                    </span>
 
-                    <div class="modal fade" id="kt_modal_update_details" tabindex="-1" aria-hidden="true" data-bs-focus="false">
-                        <div class="modal-dialog modal-dialog-centered mw-650px">
-                            <div class="modal-content">
-                                <div class="modal-header" id="kt_modal_add_user_header">
-                                    <h2 class="fw-bolder">Kullanıcı Bloke Formu</h2>
-                                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close">
-                                        <span class="svg-icon svg-icon-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
-                                            </svg>
-                                        </span>
+                <!-- Kullanıcı Temel Bilgileri -->
+                <div class="d-flex flex-column">
+                    <h2 class="fs-1 fw-bold text-dark mb-0">@Model.Name @Model.Surname</h2>
+                    <div class="text-muted fs-5 mb-3">
+                        <a href="mailto:@Model.Email" class="text-gray-600 text-hover-primary">@Model.Email</a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <!-- Durum Göstergesi -->
+                        @if (Model.Active == 1)
+                        {
+                            <div class="badge badge-light-success d-inline">Aktif Kullanıcı</div>
+                        }
+                        else
+                        {
+                            <div class="badge badge-light-danger d-inline">Pasif Kullanıcı</div>
+                        }
+                        <div class="mx-3">•</div>
+                        <div class="text-muted fs-6">@(Model.Msisdn.Substring(0, 2) + "******" + Model.Msisdn.Substring(Model.Msisdn.Length - 2))</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body pt-5">
+            <!-- Üst İstatistik Kartları -->
+            <div class="row g-5 g-xl-8 mb-5">
+                <!-- Giriş Sayısı Kartı -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-light-primary h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-primary fs-1">@Model.LoginCount</span>
+                                <span class="text-gray-600 fs-6">Giriş Sayısı</span>
+                            </div>
+                            <div class="symbol symbol-50px">
+                                <span class="symbol-label bg-white">
+                                    <i class="bi bi-door-open fs-2x text-primary"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Son Giriş Kartı -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-light-info h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column">
+                                <span class="text-info fs-6">Son Giriş</span>
+                                <span class="fw-bold text-dark fs-5">@Model.LastLogin</span>
+                            </div>
+                            <div class="symbol symbol-50px">
+                                <span class="symbol-label bg-white">
+                                    <i class="bi bi-clock-history fs-2x text-info"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Adresi Kartı -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-light-warning h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column">
+                                <span class="text-warning fs-6">Son IP Adresi</span>
+                                <span class="fw-bold text-dark fs-5">@Model.LastIP</span>
+                            </div>
+                            <div class="symbol symbol-50px">
+                                <span class="symbol-label bg-white">
+                                    <i class="bi bi-hdd-network fs-2x text-warning"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kayıt Tarihi Kartı -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-light-success h-100">
+                        <div class="card-body d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column">
+                                <span class="text-success fs-6">Kayıt Tarihi</span>
+                                <span class="fw-bold text-dark fs-5">@Model.RegistrationDate</span>
+                            </div>
+                            <div class="symbol symbol-50px">
+                                <span class="symbol-label bg-white">
+                                    <i class="bi bi-calendar-check fs-2x text-success"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aksiyon Butonları -->
+            <div class="d-flex justify-content-end border-top pt-5">
+                <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="" data-bs-original-title="Kullanıcı Profile Geçiş">
+                    <a href="@Url.Action("SwitchToUserProfile", "SiaUser", new { msisdn = Model.Msisdn })" 
+                       class="btn btn-sm btn-icon btn-light-primary me-3"> <i class="bi bi-person-check fs-3"></i></a>
+                </span>
+                 
+                <button type="button" class="btn btn-sm btn-light-danger" data-bs-toggle="modal" data-bs-target="#kt_modal_block_user">
+                    <i class="bi bi-shield-x me-2"></i>Bloke Et
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kullanıcı Detay ve Aktivite Bölümü -->
+    <div class="row g-5 g-xl-8">
+        <!-- Sol Kenar Bilgileri -->
+        <div class="col-xl-4">
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">Kullanıcı Detayları</span>
+                        <span class="text-muted mt-1 fs-7">Hesap bilgileri ve detayları</span>
+                    </h3>
+                </div>
+
+                <div class="card-body pt-0">
+                    <div class="d-flex flex-column mb-4">
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-primary">
+                                    <i class="bi bi-person fs-2x text-primary"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">Ad Soyad</span>
+                                <span class="fw-bold fs-6">@Model.Name @Model.Surname</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-info">
+                                    <i class="bi bi-phone fs-2x text-info"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">Telefon</span>
+                                <span class="fw-bold fs-6">@(Model.Msisdn.Substring(0, 2) + "******" + Model.Msisdn.Substring(Model.Msisdn.Length - 2))</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-success">
+                                    <i class="bi bi-envelope fs-2x text-success"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">E-posta</span>
+                                <span class="fw-bold fs-6">@Model.Email</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-warning">
+                                    <i class="bi bi-hdd-network fs-2x text-warning"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">Son IP Adresi</span>
+                                <span class="fw-bold fs-6">@Model.LastIP</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-danger">
+                                    <i class="bi bi-calendar-date fs-2x text-danger"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">Kayıt Tarihi</span>
+                                <span class="fw-bold fs-6">@Model.RegistrationDate</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="symbol symbol-45px me-5">
+                                <span class="symbol-label bg-light-primary">
+                                    <i class="bi bi-clock-history fs-2x text-primary"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-muted fs-7">Son Giriş</span>
+                                <span class="fw-bold fs-6">@Model.LastLogin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aktivite Özeti Kartı (İsteğe bağlı) -->
+            <div class="card mb-5 mb-xl-8">
+                <div class="card-header border-0">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold fs-3 mb-1">Özet Aktivite</span>
+                    </h3>
+                </div>
+
+                <div class="card-body pt-0">
+                    <!-- Burada aktivite özetleri gösterilebilir -->
+                    <div class="timeline">
+                        <div class="timeline-item mb-5">
+                            <div class="timeline-line w-40px"></div>
+                            <div class="timeline-icon symbol symbol-circle symbol-40px me-4">
+                                <div class="symbol-label bg-light">
+                                    <i class="bi bi-check2 fs-2 text-success"></i>
+                                </div>
+                            </div>
+                            <div class="timeline-content mb-2">
+                                <div class="overflow-auto pe-3">
+                                    <div class="fs-5 fw-bold mb-2">Son giriş yapıldı</div>
+                                    <div class="d-flex align-items-center mt-1 fs-6">
+                                        <div class="text-muted me-2 fs-7">@Model.LastLogin</div>
                                     </div>
                                 </div>
-                                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
-                                    <form id="user_blocked_form" class="form" action="#">
-                                        <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll" data-bs-focus="false" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header" data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
-                                            <div class="fv-row mb-7">
-                                                <label class="required fw-bold fs-6 mb-2">Açıklama</label>
-                                                <textarea type="text" name="Note" rows="8" cols="8" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Lütfen Bir Açıklama Giriniz"></textarea>
-                                            </div>
-                                            <input type="hidden" value="@Model.Msisdn" name="Data" />
-
-
-                                        </div>
-                                        <div class="text-center pt-15">
-                                            <button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">Vazgeç</button>
-                                            <button type="submit" class="btn btn-primary" data-kt-users-modal-action="submit">
-                                                <span class="indicator-label">Kaydet</span>
-                                                <span class="indicator-progress">
-                                                    Lütfen Bekleyiniz...
-                                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
                             </div>
                         </div>
-                    </div>
 
-
-                </div>
-                <!--end::Details toggle-->
-                <div class="separator"></div>
-                <div id="kt_user_view_details" class="collapse show">
-                    <div class="pb-5 fs-6">
-                        <!--begin::Details item-->
-                        <div class="fw-bolder mt-5">Msisdn</div>
-                        <div class="text-gray-600">@Model.Msisdn</div>
-                        <!--begin::Details item-->
-                        <!--begin::Details item-->
-                        <div class="fw-bolder mt-5">Email</div>
-                        <div class="text-gray-600">
-                            <a href="#" class="text-gray-600 text-hover-primary">@Model.Email</a>
-                        </div>
-                        <!--begin::Details item-->
-                        <!--begin::Details item-->
-                        <div class="fw-bolder mt-5">Last IP</div>
-                        <div class="text-gray-600">
-                            @Model.LastIP
-                        </div>
-                        <!--begin::Details item-->
-                        <div class="fw-bolder mt-5">Registration Date</div>
-                        <div class="text-gray-600">@Model.RegistrationDate</div>
-                        <!--begin::Details item-->
-                        <div class="fw-bolder mt-5">Last Login</div>
-                        <div class="text-gray-600">@Model.LastLogin</div>
-                        <!--begin::Details item-->
+                        <!-- Daha fazla aktivite öğesi eklenebilir -->
                     </div>
                 </div>
-                <!--end::Details content-->
             </div>
         </div>
 
-    </div>
-
-    <div class="flex-lg-row-fluid ms-lg-15">
-        <!--begin:::Tabs-->
-        <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-bold mb-8">
-
-            <!--begin:::Tab item-->
-            <li class="nav-item">
-                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_user_view_overview_events_and_logs_tab">Kullanıcı Geçmişi</a>
-            </li>
-            <!--end:::Tab item-->
-
-        </ul>
-        <!--end:::Tabs-->
-        <!--begin:::Tab content-->
-        <div class="tab-content" id="myTabContent">
-
-            <!--begin:::Tab pane-->
-            <div class="tab-pane fade show active" id="kt_user_view_overview_events_and_logs_tab" role="tabpanel">
-                <div class="card pt-4 mb-6 mb-xl-9">
-                    <table id="kt_datatable_example_1" class="table table-striped table-row-bordered gy-5 gs-7">
-                        <thead>
-                            <tr class="fw-bold fs-6   text-muted">
-                                <th class="min-w-200px">Proje ID</th>
-                                <th class="min-w-200px">Proje Adı</th>
-                                <th class="min-w-150px">Puan</th>
-                                <th class="min-w-100px">Text</th>
-                                <th class="min-w-100px"> </th>
-                            </tr>
-                        </thead>
-
-
-                    </table>
+        <!-- Sağ Taraf - Kullanıcı Projeleri -->
+        <div class="col-xl-8">
+            <div class="card card-flush h-xl-100">
+                <div class="card-header pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-dark">Kullanıcı Projeleri</span>
+                        <span class="text-muted mt-2 fw-semibold fs-7">Kullanıcının katıldığı projeler</span>
+                    </h3>
+                    <div class="card-toolbar">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary me-3">
+                                <i class="bi bi-filter fs-3"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary">
+                                <i class="bi bi-download fs-3"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="kt_user_projects_table" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                            <thead>
+                                <tr class="fw-bold text-muted bg-light">
+                                    <th class="min-w-120px rounded-start">Proje ID</th>
+                                    <th class="min-w-150px">Proje Adı</th>
+                                    <th class="min-w-100px">Puan</th>
+                                    <th class="min-w-100px">Durum</th>
+                                    <th class="min-w-100px text-end rounded-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Örnek satır, gerçek veri AJAX ile yüklenecek -->
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-45px me-5">
+                                                <span class="symbol-label bg-light-primary text-primary">PR</span>
+                                            </div>
+                                            <div class="d-flex justify-content-start flex-column">
+                                                <span class="text-dark fw-bold text-hover-primary fs-6">PRJ-001</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex justify-content-start flex-column">
+                                                <span class="text-dark fw-bold text-hover-primary fs-6">Örnek Proje Adı</span>
+                                                <span class="text-muted fw-semibold text-muted d-block fs-7">Kategori: Web</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rating me-2">
+                                                <div class="rating-label checked">
+                                                    <i class="bi bi-star-fill fs-6"></i>
+                                                </div>
+                                                <div class="rating-label checked">
+                                                    <i class="bi bi-star-fill fs-6"></i>
+                                                </div>
+                                                <div class="rating-label checked">
+                                                    <i class="bi bi-star-fill fs-6"></i>
+                                                </div>
+                                                <div class="rating-label">
+                                                    <i class="bi bi-star-fill fs-6"></i>
+                                                </div>
+                                                <div class="rating-label">
+                                                    <i class="bi bi-star-fill fs-6"></i>
+                                                </div>
+                                            </div>
+                                            <span class="text-muted fw-semibold text-muted d-block fs-7">65 Puan</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-light-success">Tamamlandı</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                            <i class="bi bi-eye-fill fs-5"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                            <i class="bi bi-arrow-right fs-5"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <!-- Daha fazla satır eklenebilir -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <!--end:::Tab pane-->
         </div>
-        <!--end:::Tab content-->
     </div>
-
-
-
 </div>
 
+<!-- Kullanıcı Bloke Modalı -->
+<div class="modal fade" id="kt_modal_block_user" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h2 class="fw-bold">Kullanıcı Bloke Formu</h2>
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+            </div>
+
+            <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <form id="user_block_form" class="form">
+                    <div class="text-center mb-5">
+                        <div class="text-muted fw-semibold fs-6">
+                            Bu işlem kullanıcıyı sistemden bloke edecektir. Bloke işlemini onaylamak için lütfen açıklama giriniz.
+                        </div>
+                    </div>
+
+                    <div class="fv-row mb-7">
+                        <label class="required fw-bold fs-6 mb-2">Açıklama</label>
+                        <textarea name="Note" rows="6" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Lütfen bir açıklama giriniz"></textarea>
+                    </div>
+
+                    <input type="hidden" value="@Model.Msisdn" name="Data" />
+
+                    <div class="text-center pt-10">
+                        <button type="reset" class="btn btn-light-danger me-3" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Vazgeç
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="block_user_submit">
+                            <span class="indicator-label">
+                                <i class="bi bi-shield-lock me-1"></i>Bloke Et
+                            </span>
+                            <span class="indicator-progress">
+                                Lütfen bekleyiniz...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section js {
-
     <script>
-        "use strict";
-        var KTUsersAddUser = function () {
-            const t = document.getElementById("kt_modal_update_details"),
-                e = t.querySelector("#user_blocked_form"),
-                n = new bootstrap.Modal(t);
-            return {
-                init: function () {
-                    (() => {
-                        var o = FormValidation.formValidation(e, {
-                            fields: {
-                                Note: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Açıklama Alani Zorunludur"
-                                        }
-                                    }
+        $(document).ready(function() {
+            // Bootstrap Tooltip'leri etkinleştirme
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Kullanıcı Bloke Form Validasyonu
+            const blockUserForm = document.getElementById("user_block_form");
+            const blockUserModal = new bootstrap.Modal(document.getElementById("kt_modal_block_user"));
+
+            if (blockUserForm) {
+                // Form validasyon yapılandırması
+                const validator = FormValidation.formValidation(blockUserForm, {
+                    fields: {
+                        Note: {
+                            validators: {
+                                notEmpty: {
+                                    message: "Açıklama alanı zorunludur"
                                 },
-
-                            },
-                            plugins: {
-                                trigger: new FormValidation.plugins.Trigger,
-                                bootstrap: new FormValidation.plugins.Bootstrap5({
-                                    rowSelector: ".fv-row",
-                                    eleInvalidClass: "",
-                                    eleValidClass: ""
-                                })
+                                stringLength: {
+                                    min: 10,
+                                    message: "Açıklama en az 10 karakter olmalıdır"
+                                }
                             }
-                        });
-                        const i = t.querySelector('[data-kt-users-modal-action="submit"]');
-                        i.addEventListener("click", (t => {
-                            t.preventDefault(), o && o.validate().then((function (t) {
-                                console.log("validated!"), "Valid" == t ? (i.setAttribute("data-kt-indicator", "on"), i.disabled = !0,
-                                    setTimeout((function () {
-                                        $.ajax({
-                                            url: '@Url.Action("BlockUser", "BlockUser")',
-                                            type: 'POST',
-                                            dataType: 'json',
-                                            cache: false,
-                                            data: new FormData(document.getElementById("user_blocked_form")),
-                                            processData: false,
-                                            contentType: false,
-                                            success: function (data) {
-                                                if (data.response == 200) {
-                                                    Swal.fire({
-                                                        text: data.message,
-                                                        icon: "success",
-                                                        buttonsStyling: !1,
-                                                        confirmButtonText: "Tamam",
-                                                        customClass: {
-                                                            confirmButton: "btn btn-primary"
-                                                        }
-                                                    }).then((function (t) {
-                                                        location.reload(true)
-                                                        t.isConfirmed && n.hide()
-                                                    }))
-                                                } else {
-                                                    Swal.fire({
-                                                        text: data.message,
-                                                        icon: "error",
-                                                        buttonsStyling: !1,
-                                                        confirmButtonText: "Tamam",
-                                                        customClass: {
-                                                            confirmButton: "btn btn-primary"
-                                                        }
-                                                    }).then((function (t) {
-                                                        location.reload(true)
-                                                        t.isConfirmed && n.hide()
-                                                    }))
-                                                }
+                        }
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: ""
+                        }),
+                        submitButton: new FormValidation.plugins.SubmitButton(),
+                        autoFocus: new FormValidation.plugins.AutoFocus()
+                    }
+                });
 
-                                            },
-                                            error: function (data) {
-                                                alert(data.error)
-                                                console.log(data)
-                                                Swal.fire({
-                                                    text: data.message,
-                                                    icon: "danger",
-                                                    buttonsStyling: !1,
-                                                    confirmButtonText: "Tamam",
-                                                    customClass: {
-                                                        confirmButton: "btn btn-primary"
-                                                    }
-                                                }).then((function (t) {
-                                                    location.reload(true)
-                                                    t.isConfirmed && n.hide()
-                                                }))
-                                            }
-                                        });
-                                        i
-                                    }))) : Swal.fire({
-                                        text: "Maalesef bazi hatalar algilandi, lutfen tekrar deneyin.",
-                                        icon: "error",
-                                        buttonsStyling: !1,
-                                        confirmButtonText: "Tamam!",
-                                        customClass: {
-                                            confirmButton: "btn btn-primary"
+                // Form gönderim işlemleri
+                const submitButton = document.getElementById("block_user_submit");
+                submitButton.addEventListener("click", function(e) {
+                    e.preventDefault();
+
+                    validator.validate().then(function(status) {
+                        if (status === "Valid") {
+                            // İşlemi onaylatma diyaloğu
+                            Swal.fire({
+                                title: "Emin misiniz?",
+                                text: "Bu kullanıcıyı bloke etmek istediğinizden emin misiniz?",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "Evet, bloke et",
+                                cancelButtonText: "Hayır, vazgeç",
+                                customClass: {
+                                    confirmButton: "btn btn-primary",
+                                    cancelButton: "btn btn-light-danger"
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Yükleme göstergesini göster
+                                    submitButton.setAttribute("data-kt-indicator", "on");
+                                    submitButton.disabled = true;
+
+                                    // Formu AJAX ile gönder
+                                    const formData = new FormData(blockUserForm);
+                                    $.ajax({
+                                        url: '@Url.Action("CreateBlockUser", "BlockedUser")',
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: formData,
+                                        processData: false,
+                                        contentType: false,
+                                        success: function(response) {
+                                            submitButton.removeAttribute("data-kt-indicator");
+                                            submitButton.disabled = false;
+
+                                            // Başarı/hata mesajını göster
+                                            Swal.fire({
+                                                text: response.message,
+                                                icon: response.isAdded ? "success" : "error",
+                                                buttonsStyling: false,
+                                                confirmButtonText: "Tamam",
+                                                customClass: {
+                                                    confirmButton: "btn btn-primary"
+                                                }
+                                            }).then(function() {
+                                                blockUserModal.hide();
+                                                if (response.isAdded) {
+                                                    location.reload();
+                                                }
+                                            });
+                                        },
+                                        error: function(xhr, status, error) {
+                                            submitButton.removeAttribute("data-kt-indicator");
+                                            submitButton.disabled = false;
+
+                                            Swal.fire({
+                                                text: "İşlem sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
+                                                icon: "error",
+                                                buttonsStyling: false,
+                                                confirmButtonText: "Tamam",
+                                                customClass: {
+                                                    confirmButton: "btn btn-primary"
+                                                }
+                                            });
                                         }
-                                    })
-                            }))
-                        })), t.querySelector('[data-kt-users-modal-action="cancel"]').addEventListener("click", (t => {
-                            t.preventDefault(), Swal.fire({
-                                text: "İptal Etmek İstediginize Emin misiniz?",
-                                icon: "warning",
-                                showCancelButton: !0,
-                                buttonsStyling: !1,
-                                confirmButtonText: "Evet!",
-                                cancelButtonText: "Hayır",
-                                customClass: {
-                                    confirmButton: "btn btn-primary",
-                                    cancelButton: "btn btn-active-light"
+                                    });
                                 }
-                            }).then((function (t) {
-                                t.value ? (e.reset(), n.hide()) : "cancel" === t.dismiss && Swal.fire({
-                                    text: "Form İptal Edildi!.",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn btn-primary"
-                                    }
-                                })
-                            }))
-                        })), t.querySelector('[data-kt-users-modal-action="close"]').addEventListener("click", (t => {
-                            t.preventDefault(), Swal.fire({
-                                text: "İptal Etmek İstediginize Emin misinz?",
-                                icon: "warning",
-                                showCancelButton: !0,
-                                buttonsStyling: !1,
-                                confirmButtonText: "Evet!",
-                                cancelButtonText: "Hayır",
+                            });
+                        } else {
+                            Swal.fire({
+                                text: "Maalesef bazı hatalar algılandı, lütfen tekrar deneyin.",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Tamam",
                                 customClass: {
-                                    confirmButton: "btn btn-primary",
-                                    cancelButton: "btn btn-active-light"
+                                    confirmButton: "btn btn-primary"
                                 }
-                            }).then((function (t) {
-                                t.value ? (e.reset(), n.hide()) : "cancel" === t.dismiss && Swal.fire({
-                                    text: "Form İptal Edilmedi!.",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "Tamam!",
-                                    customClass: {
-                                        confirmButton: "btn btn-primary"
-                                    }
-                                })
-                            }))
-                        }))
-                    })()
-                }
+                            });
+                        }
+                    });
+                });
+
+                // İptal butonu olayı
+                document.querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function() {
+                    blockUserForm.reset();
+                });
             }
-        }();
-        KTUtil.onDOMContentLoaded((function () {
-            KTUsersAddUser.init()
-        }));
-    </script>
-    <script>
-        $("#kt_datatable_example_1").DataTable({
-            "scrollY": 500,
-            "scrollX": true
+
+            // DataTable başlatma
+            $("#kt_user_projects_table").DataTable({
+                info: false,
+                order: [],
+                pageLength: 5,
+                lengthChange: false,
+                columnDefs: [
+                    { orderable: false, targets: 4 } // İşlemler sütunu sıralamayı devre dışı bırak
+                ],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Turkish.json",
+                    search: "",
+                    searchPlaceholder: "Ara...",
+                    paginate: {
+                        previous: "<i class='bi bi-arrow-left fs-5'></i>",
+                        next: "<i class='bi bi-arrow-right fs-5'></i>"
+                    }
+                },
+                dom: "<'row'" +
+                     "<'col-sm-12 d-flex align-items-center justify-content-between'" +
+                     "<'me-3'f>" +
+                     "<'d-flex align-items-center'>" +
+                     ">" +
+                     ">" +
+                     "<'table-responsive'tr>" +
+                     "<'row'" +
+                     "<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+                     "<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+                     ">"
+            });
         });
     </script>
 }

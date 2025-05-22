@@ -31,6 +31,16 @@
                 </span>
                 Filtre
             </button>
+            <button type="button" id="btnExcelExport" class="btn btn-light-success me-3">
+                <span class="svg-icon svg-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path opacity="0.3" d="M19 15C20.7 15 22 13.7 22 12C22 10.3 20.7 9 19 9C18.9 9 18.9 9 18.8 9C18.9 8.7 19 8.3 19 8C19 6.3 17.7 5 16 5C15.4 5 14.8 5.2 14.3 5.5C13.4 4 11.8 3 10 3C7.2 3 5 5.2 5 8C5 8.3 5 8.7 5.1 9H5C3.3 9 2 10.3 2 12C2 13.7 3.3 15 5 15H19Z" fill="currentColor" />
+                        <path d="M13 17.4V12C13 11.4 12.6 11 12 11C11.4 11 11 11.4 11 12V17.4H13Z" fill="currentColor" />
+                        <path opacity="0.3" d="M8 17.4H16L12.7 20.7C12.3 21.1 11.7 21.1 11.3 20.7L8 17.4Z" fill="currentColor" />
+                    </svg>
+                </span>
+                Excel İndir
+            </button>
             <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true">
                 <div class="px-7 py-5">
                     <div class="fs-4 text-dark fw-bolder">Filtre Özellikleri</div>
@@ -215,7 +225,7 @@
             </div>
 
 
-         <div class="modal fade" id="kt_modal_export_users" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="kt_modal_export_users" tabindex="-1" aria-hidden="true">
                 <!--begin::Modal dialog-->
                 <div class="modal-dialog modal-dialog-centered mw-650px">
                     <div class="modal-content">
@@ -235,7 +245,7 @@
                 </div>
             </div>
 
-  
+
             <!-- Bildirim Gönderme Modal -->
             <div class="modal fade" tabindex="-1" id="send_mobil_notification" tabindex="-1" aria-hidden="true" data-bs-focus="false">
                 <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -254,27 +264,27 @@
                             <div class="modal-body py-10 px-lg-17 ">
                                 <!--begin::Scroll-->
                                 <div class="scroll-y me-n7 pe-7 fv-row" id="kt_modal_new_target_form_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_new_target_form_header" data-kt-scroll-wrappers="#kt_modal_new_target_form_scroll" data-kt-scroll-offset="300px">
-                                     
+
                                     <input type="hidden" id="hiddenRowId" name="surveyId">
                                     <input type="hidden" value="@userGuid" name="SentBy">
 
                                     <div class="fv-row mb-7">
                                         <label class="required fs-6 fw-semibold mb-2">Bildirim Başlığı</label>
-                                        <input type="text" class="form-control form-control-solid" name="NotificationTitle" placeholder="Bildirim başlığını girin"   />
+                                        <input type="text" class="form-control form-control-solid" name="NotificationTitle" placeholder="Bildirim başlığını girin" />
                                         <div class="form-text">Başlık 80 karakterden kısa olmalıdır.</div>
                                         <div class="fv-plugins-message-container invalid-feedback">
                                         </div>
                                     </div>
-                                     
+
                                     <div class="fv-row mb-7">
                                         <label class="required fs-6 fw-semibold mb-2">Bildirim İçeriği</label>
-                                        <textarea class="form-control form-control-solid" rows="4" name="NotificationContent" placeholder="Bildirim içeriğini girin"  ></textarea>
+                                        <textarea class="form-control form-control-solid" rows="4" name="NotificationContent" placeholder="Bildirim içeriğini girin"></textarea>
                                         <div class="form-text">İçerik 1000 karakterden kısa olmalıdır.</div>
                                         <div class="fv-plugins-message-container invalid-feedback">
                                         </div>
                                     </div>
- 
-                                     
+
+
                                     <div class="fv-row mb-7">
                                         <div class="form-check form-switch form-check-custom form-check-solid">
                                             <input class="form-check-input" type="checkbox" id="scheduledNotification" />
@@ -283,7 +293,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                     
+
                                     <div class="fv-row mb-7 d-none" id="scheduledTimeSection">
                                         <label class="fs-6 fw-semibold mb-2">Gönderim Zamanı</label>
                                         <input class="form-control form-control-solid" placeholder="Tarih ve Saat Seçin" id="kt_datepicker" name="ScheduledFor" />

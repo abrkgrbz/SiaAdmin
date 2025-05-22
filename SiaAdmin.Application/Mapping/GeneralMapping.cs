@@ -8,10 +8,12 @@ using System.Web;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SiaAdmin.Application.DTOs.FilterData;
+using SiaAdmin.Application.DTOs.Report;
 using SiaAdmin.Application.DTOs.Survey;
 using SiaAdmin.Application.DTOs.SurveyAssigned;
 using SiaAdmin.Application.Features.Commands.NotificationHistory.CreateNotificationHistory;
 using SiaAdmin.Application.Features.Commands.Survey.CreateSurvey;
+using SiaAdmin.Application.Features.Commands.User.CreateBlockUser;
 using SiaAdmin.Application.Features.Commands.User.CreateUser;
 using SiaAdmin.Application.Features.Queries.DeviceRegistrations.GetUserDeviceTokenList;
 using SiaAdmin.Application.Features.Queries.Incentive.GetAllIncentice;
@@ -21,6 +23,7 @@ using SiaAdmin.Application.Features.Queries.Point.GetPointListBySurveyId;
 using SiaAdmin.Application.Features.Queries.SiaRole.GetSiaRoles;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetByGuidSiaUser;
 using SiaAdmin.Application.Features.Queries.SiaUser.GetByPhoneNumberUser;
+using SiaAdmin.Application.Features.Queries.Survey.GetAllSurveyData;
 using SiaAdmin.Application.Features.Queries.SurveyLog.GetUserLogDetail;
 using SiaAdmin.Application.Features.Queries.User;
 using SiaAdmin.Application.Features.Queries.User.GetAllChurnDataList;
@@ -40,6 +43,7 @@ using SiaAdmin.Application.Mapping.Profiles.Procedure;
 using SiaAdmin.Domain.Entities.Custom;
 using SiaAdmin.Domain.Entities.Models;
 using SiaAdmin.Domain.Entities.Procedure;
+using SiaAdmin.Domain.Entities.ReportModel;
 using static SiaAdmin.Application.Features.Queries.User.SendNotifactionUser.SendNotifactionUserHandler;
 using ToplamAnketBilgisi = SiaAdmin.Application.Mapping.Profiles.Procedure.ToplamAnketBilgisi;
 
@@ -92,6 +96,8 @@ namespace SiaAdmin.Application.Mapping
             CreateMap<UserSurvey, GetSurveyUserListViewModel>()
                 .ForMember(x => x.SurveyLink,
                     opt => opt.MapFrom<CustomResolver, string>(src => src.SurveyLink))
+                .ForMember(dest => dest.SurveyDescription,
+                    opt => opt.MapFrom(src => src.SurveyDescription + " "))
                 .ReverseMap();
 
             CreateMap<LastSeenAdet, GetListLastSeenViewModel>().ReverseMap(); 
@@ -105,7 +111,27 @@ namespace SiaAdmin.Application.Mapping
             CreateMap<NotificationHistoryRequest, NotificationHistory>()
                 .ForMember(dest => dest.ScheduledFor, opt => opt.MapFrom<ScheduledForValueResolver>());
 
-            ;
+            CreateMap<BlockList, CreateBlockUserRequest>().ReverseMap();
+            CreateMap<Survey, GetAllSurveyModel>().ReverseMap();
+
+           
+            CreateMap<Report, ReportDefinitionDto>()
+                .ForMember(dest => dest.Category, opt => opt.Ignore())
+                .ForMember(dest => dest.Icon, opt => opt.MapFrom(src =>
+                    src.ReportType == ReportType.Custom ? "fa-file-alt" : $"fa-{src.ReportType.ToString().ToLower()}"))
+                .ForMember(dest => dest.ReportType, opt => opt.MapFrom(src => src.ReportType.ToString()))
+                .ForMember(dest => dest.UsesTemplate, opt => opt.MapFrom(src =>
+                    src.ReportType == ReportType.Custom && (src.Id == "601" || src.Id == "602")))
+                .ForMember(dest => dest.TemplateName, opt => opt.MapFrom(src =>
+                    src.Id == "601" ? "TemplateTanisma.xlsx" :
+                    src.Id == "602" ? "TemplateOther.xlsx" : null));
+
+            CreateMap<ReportCategory, ReportCategoryDto>();
+
+            // DTO -> Domain (gerekirse)
+            CreateMap<ReportDefinitionDto, Report>()
+                .ForMember(dest => dest.ReportType, opt => opt.MapFrom(src =>
+                    Enum.Parse<ReportType>(src.ReportType)));
         }
 
         private string RevizeImagePath(string imagePath)

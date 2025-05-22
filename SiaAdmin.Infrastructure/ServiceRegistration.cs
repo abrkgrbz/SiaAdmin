@@ -1,19 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SiaAdmin.Application.DTOs.Excel;
+﻿ 
+using Microsoft.Extensions.DependencyInjection; 
 using SiaAdmin.Application.Interfaces.ConvertExcel;
 using SiaAdmin.Application.Interfaces.Excel;
 using SiaAdmin.Application.Interfaces.Firebase;
 using SiaAdmin.Application.Interfaces.Sms;
 using SiaAdmin.Infrastructure.Services;
-using System.Net.Http.Headers;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
+using System.Net.Http.Headers; 
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,8 +14,13 @@ using SiaAdmin.Application.Interfaces.Mail;
 using SiaAdmin.Application.Interfaces.SiaUser;
 using SiaAdmin.Application.Interfaces.PushNotification;
 using SiaAdmin.Application.Interfaces.BackgroundJob;
+using SiaAdmin.Application.Interfaces.Database;
 using SiaAdmin.Application.Interfaces.NotificationScheduler;
 using SiaAdmin.Application.Interfaces.NotificationProcessor;
+using SiaAdmin.Application.Interfaces.QueryBuilder;
+using SiaAdmin.Application.Interfaces.Report;
+using SiaAdmin.Infrastructure.Data;
+using SiaAdmin.Infrastructure.Query;
 
 namespace SiaAdmin.Infrastructure
 {
@@ -79,7 +76,10 @@ namespace SiaAdmin.Infrastructure
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 }));
-
+            services.AddScoped<IDatabaseService, SqlDatabaseService>();
+            services.AddScoped<IReportService, ReportService>(); 
+            services.AddScoped<IQueryBuilder, QueryBuilder>();
+            services.AddScoped<IQueryTypeBuilder, TanismaAnketiQueryBuilder>();
             // Hangfire Server
             services.AddHangfireServer(options =>
             {

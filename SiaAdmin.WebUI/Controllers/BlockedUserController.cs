@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SiaAdmin.Application.Features.Commands.User.CreateBlockUser;
 using SiaAdmin.Application.Features.Queries.BlockList.GetBlockedListDataTable;
 using SiaAdmin.Application.Features.Queries.User.GetUserProfile;
 
@@ -33,9 +34,10 @@ namespace SiaAdmin.WebUI.Controllers
         }
 
         [HttpPost("kullanici-blockla")]
-        public async Task<IActionResult> BlockUser()
+        public async Task<IActionResult> CreateBlockUser(CreateBlockUserRequest request)
         {
-            return Ok();
+            var response = await Mediator.Send(request);
+            return Ok(response);
 
         }
 

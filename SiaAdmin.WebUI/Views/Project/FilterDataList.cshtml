@@ -5,8 +5,31 @@
 
 @section css{
     <link href="~/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <style>
+    media (max-width: 768px) {
+        .form-select, .form-control
+
+    {
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    }
+</style>
 }
-<div class="card">
+@* <div class="card">
     <div class="card-header border-0 pt-6">
         <div class="card-title">
             <div class="d-flex align-items-center position-relative my-1">
@@ -127,9 +150,175 @@
         </table>
     </div>
 </div>
+ *@
+<div class="card">
+    <!-- Başlık ve Açıklama -->
+    <div class="card-header bg-light py-3">
+        <h3 class="card-title fw-bolder">Anket Verileri Listesi</h3>
+        <p class="text-muted mt-2 mb-0">Anket verilerini filtreleyebilir ve Excel'e aktarabilirsiniz.</p>
+    </div>
 
+    <!-- Hızlı Filtreleme Açılır/Kapanır Panel -->
+    <div class="card-body py-3">
+        <div class="d-flex align-items-center mb-2">
+            <button id="btn_toggle_filters" class="btn btn-sm btn-light-primary me-3">
+                <i class="fas fa-filter me-1"></i> Filtreleri Göster/Gizle
+            </button>
+            <div class="ms-auto">
+                <button type="button" id="btn_reset" class="btn btn-sm btn-light-danger me-2">
+                    <i class="fas fa-times-circle me-1"></i> Temizle
+                </button>
+                <button type="button" id="btn_excel" class="btn btn-sm btn-success">
+                    <i class="fas fa-file-excel me-1"></i> Excel'e Aktar
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtreler (Gizlenebilir) -->
+        <div id="filter_panel" class="border rounded p-3 mb-3" style="display: none;">
+            <div class="row g-3">
+                <!-- İlk Satır -->
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Cinsiyet</label>
+                    <select class="form-select form-select-sm" id="gender_filter">
+                        <option value="">Tümü</option>
+                        <option value="Erkek">Erkek</option>
+                        <option value="Kadın">Kadın</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Yaş Grubu</label>
+                    <select class="form-select form-select-sm" id="age_group_filter">
+                        <option value="">Tümü</option>
+                        <option value="12-14">12-14</option>
+                        <option value="15-17">15-17</option>
+                        <option value="18-24">18-24</option>
+                        <option value="25-34">25-34</option>
+                        <option value="35-44">35-44</option>
+                        <option value="45-54">45-54</option>
+                        <option value="55+">55+</option> 
+                    </select>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Emekli</label>
+                    <select class="form-select form-select-sm" id="retirement_filter">
+                        <option value="">Tümü</option>
+                        <option value="Evet">Evet</option>
+                        <option value="Hayır">Hayır</option>
+                    </select>
+                </div>
+
+                <!-- İkinci Satır -->
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">İl</label>
+                    <select class="form-select form-select-sm" id="province_filter">
+                        <option value="">Tümü</option>
+                        <!-- İller dinamik olarak doldurulacak -->
+                    </select>
+                </div>
+                 
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Bölge</label>
+                    <select class="form-select form-select-sm" id="region_filter">
+                        <option value="">Tümü</option>
+                        <!-- Bölgeler dinamik olarak doldurulacak -->
+                    </select>
+                </div>
+
+                <!-- Üçüncü Satır (Diğer Filtreler) -->
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Eğitim</label>
+                    <select class="form-select form-select-sm" id="education_filter">
+                        <option value="">Tümü</option>
+                        <!-- Eğitim seçenekleri dinamik olarak doldurulacak -->
+                    </select>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">Meslek Grubu</label>
+                    <select class="form-select form-select-sm" id="occupation_filter">
+                        <option value="">Tümü</option>
+                        <!-- Meslekler dinamik olarak doldurulacak -->
+                    </select>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <label class="form-label fs-7 fw-bold">SES</label>
+                    <select class="form-select form-select-sm" id="ses_filter">
+                        <option value="">Tümü</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
+                        <option value="DE">DE</option> 
+                    </select>
+                </div>
+
+                <!-- Filtre Uygula Butonu -->
+                <div class="col-12 text-end">
+                    <button type="button" id="btn_filter" class="btn btn-sm btn-primary">
+                        <i class="fas fa-search me-1"></i> Filtrele
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aktif Filtreler Gösterimi -->
+        <div id="active_filters" class="d-flex flex-wrap gap-2 mb-2" style="display: none !important;"></div>
+
+        <!-- Hızlı Arama -->
+        <div class="d-flex align-items-center position-relative">
+            <span class="svg-icon svg-icon-1 position-absolute ms-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
+                    <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                </svg>
+            </span>
+            <input type="text" id="quick_search" class="form-control form-control-sm ps-10" placeholder="Hızlı arama..." />
+        </div>
+    </div>
+
+    <!-- Veri Tablosu -->
+    <div class="card-body pt-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-rounded table-striped border gy-4 gs-4" id="kt_table_users">
+                <thead class="bg-light-primary">
+                    <tr class="fw-bold fs-7 text-gray-800 border-bottom border-gray-200">
+                        <th>SurveyUserGUID</th>
+                        <th>Açık Yaş</th>
+                        <th>Grup Yaş</th>
+                        <th>Cinsiyet</th>
+                        <th>İl</th>
+                        <th>İlçe</th>
+                        <th>Bölge</th>
+                        <th>HHR</th>
+                        <th>Eğitim GK</th>
+                        <th>Eğitim HR</th>
+                        <th>Emekli</th>
+                        <th>AMeslek GK</th>
+                        <th>AMeslek HR</th>
+                        <th>YMeslek GK</th>
+                        <th>YMeslek HR</th>
+                        <th>YMeslek Detay GK</th>
+                        <th>YMeslek Detay HR</th>
+                        <th>YSES</th>
+                        <th>G02</th>
+                        <th>G03</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+ 
 
 @section js{
-    <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
-    <script src="js/project/FilterDataLoadTable.js"></script>
+     <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+     <script src="js/project/LocationData.js"></script> 
+     <script src="js/project/FilterDataLoadTable.js"></script> 
+    
 }

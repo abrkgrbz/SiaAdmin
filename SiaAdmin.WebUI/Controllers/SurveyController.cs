@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using ClosedXML.Excel;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Newtonsoft.Json;
 using SiaAdmin.Application.Features.Commands.Survey.CloseSurvey;
 using SiaAdmin.Application.Features.Commands.Survey.CreateSurvey;
 using SiaAdmin.Application.Features.Queries.DeviceRegistrations.GetUserDeviceTokenList;
+using SiaAdmin.Application.Features.Queries.Survey.GetAllSurveyData;
 using SiaAdmin.Application.Features.Queries.Survey.GetDataTableSurvey;
 using SiaAdmin.Application.Features.Queries.Survey.GetLastSurveyId;
 using SiaAdmin.Application.Features.Queries.SurveyAssigned.GetUserGuidBySurveyAssigned;
@@ -171,6 +173,72 @@ namespace SiaAdmin.WebUI.Controllers
             };
 
             return Ok(finalResult);
+        }
+
+        [HttpGet("export-survey-excel")]
+        public async Task<IActionResult> ExportSurveyToExcel()
+        {
+            try
+            {
+
+                var data = await Mediator.Send(new GetAllSurveyDataRequest());
+
+                using (var workbook = new XLWorkbook())
+                { 
+                    var worksheet = workbook.Worksheets.Add("Proje Listesi"); 
+
+                    worksheet.Cell(1, 1).Value = "SurveyId";
+                    worksheet.Cell(1, 2).Value = "SurveyText";
+                    worksheet.Cell(1, 3).Value = "SurveyDescription";
+                    worksheet.Cell(1, 4).Value = "SurveyLink";
+                    worksheet.Cell(1, 5).Value = "SurveyLinkText";
+                    worksheet.Cell(1, 6).Value = "SurveyValidity";
+                    worksheet.Cell(1, 7).Value = "SurveyActive";
+                    worksheet.Cell(1, 8).Value = "SurveyStartDate";
+                    worksheet.Cell(1, 9).Value = "SurveyPoints";
+                    worksheet.Cell(1, 10).Value = "Mandatory";
+                    worksheet.Cell(1, 11).Value = "Timestamp";
+                    worksheet.Cell(1, 12).Value = "DBAdress"; 
+
+                    var headerRange = worksheet.Range(1, 1, 1, 6);
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    // Verileri ekle
+                    for (int i = 0; i < data.GetAllSurveyModels.Count; i++)
+                    {
+                        var survey = data.GetAllSurveyModels[i];
+                        worksheet.Cell(i + 2, 1).Value = survey.Id;
+                        worksheet.Cell(i + 2, 2).Value = survey.SurveyText;
+                        worksheet.Cell(i + 2, 3).Value = survey.SurveyDescription;
+                        worksheet.Cell(i + 2, 4).Value = survey.SurveyLink;
+                        worksheet.Cell(i + 2, 5).Value = survey.SurveyLinkText;
+                        worksheet.Cell(i + 2, 6).Value = survey.SurveyValidity;
+                        worksheet.Cell(i + 2, 7).Value = survey.SurveyActive;
+                        worksheet.Cell(i + 2, 8).Value = survey.SurveyStartDate;
+                        worksheet.Cell(i + 2, 9).Value = survey.SurveyPoints;
+                        worksheet.Cell(i + 2, 10).Value = survey.Mandotory;
+                        worksheet.Cell(i + 2, 11).Value = survey.Timestamp;
+                        worksheet.Cell(i + 2, 12).Value = survey.DBAdress;
+                    }
+                     
+                    worksheet.Columns().AdjustToContents();
+                     
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        stream.Position = 0;
+                         
+                        string fileName = $"Projeler_Listesi_{DateTime.Now.ToString("yyyy-MM-dd")}.xlsx";
+                        return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { 
+                return StatusCode(500, "Excel dosyası oluşturulurken bir hata oluştu");
+            }
         }
 
     }

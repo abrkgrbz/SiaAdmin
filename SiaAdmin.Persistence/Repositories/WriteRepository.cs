@@ -15,7 +15,7 @@ using SiaAdmin.Persistence.Utils;
 
 namespace SiaAdmin.Persistence.Repositories
 {
-    public class WriteRepository<T>:IWriteRepository<T> where T : BaseEntity
+    public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
     {
         private readonly SiaAdminDbContext _context;
 
@@ -42,9 +42,9 @@ namespace SiaAdmin.Persistence.Repositories
             EntityEntry<T> entityEntry = await Table.AddAsync(entity);
 
             if (entityEntry.State == EntityState.Added)
-            { 
+            {
                 await _context.SaveChangesAsync();
-                return entity;  
+                return entity;
             }
 
             return default;
@@ -72,19 +72,24 @@ namespace SiaAdmin.Persistence.Repositories
             return true;
         }
 
-        public async Task<int> SaveAsync(string userId=null,bool project=false)
+        public async Task<int> SaveAsync(string userId = null, bool project = false)
         {
-            if (project==true)
+            if (project == true)
             {
                 BeforeSaveChanges(userId);
             }
             return await _context.SaveChangesAsync();
         }
-        
+
         public bool Update(T entity)
         {
             EntityEntry<T> entityEntry = Table.Update(entity);
-            return entityEntry.State == EntityState.Modified;
+            if (entityEntry.State == EntityState.Modified)
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         private void BeforeSaveChanges(string userId)
@@ -97,7 +102,7 @@ namespace SiaAdmin.Persistence.Repositories
                     continue;
                 var auditEntry = new AuditEntry(entry);
                 auditEntry.TableName = entry.Entity.GetType().Name;
-                
+
                 auditEntries.Add(auditEntry);
                 foreach (var property in entry.Properties)
                 {
@@ -118,7 +123,7 @@ namespace SiaAdmin.Persistence.Repositories
                     }
                     if (auditEntry.TableName == "SurveyAssigned" && property.Metadata.Name.Equals("SurveyId"))
                     {
-                        
+
                         auditEntry.KeyValues["SurveyId"] = property.CurrentValue;
                         continue;
                     }
